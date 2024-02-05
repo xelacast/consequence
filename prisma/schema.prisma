@@ -1,13 +1,28 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-
+model user {
+  id                 String    @id @default(uuid())
+  email              String    @unique
+  name               String?
+  birthday           DateTime?
+  first_name         String?
+  gender             String?
+  last_name          String?
+  last_sign_in_at    DateTime?
+  object             String?   @default("user")
+  password_enabled   Boolean   @default(false)
+  phone_numbers      String[]
+  profile_image_url  String?
+  two_factor_enabled Boolean   @default(false)
+  updated_at         DateTime  @default(now())
+  username           String?
+  allowed_to_login   Boolean   @default(true)
+}
