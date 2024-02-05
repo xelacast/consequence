@@ -25,4 +25,149 @@ model user {
   updated_at         DateTime  @default(now())
   username           String?
   allowed_to_login   Boolean   @default(true)
+
+  day day[]
+}
+
+model day {
+  id       String   @id @default(uuid())
+  date      DateTime @default(now())
+  user      user     @relation(fields: [user_id], references: [id])
+  user_id   String
+  sleep     sleep?
+  supplements supplements[]
+  exercise  exercise[]
+  meditation meditation[]
+  nightly_routine nightly_routine?
+  health    health[]
+
+  @@index([date])
+}
+
+model sleep {
+  id       String   @id @default(uuid())
+  date     DateTime @default(now())
+  hours    Int
+  minutes  Int
+  quality  String
+  time     Int
+
+  day      day      @relation(fields: [day_id], references: [id])
+  day_id   String   @unique
+}
+
+model supplements {
+  id       String   @id @default(uuid())
+  date     DateTime @default(now())
+  name     Supplements
+  quantity Int // in micrograms
+  time_of_day_taken    TimeOfDay
+  time     DateTime
+
+  day      day      @relation(fields: [day_id], references: [id])
+  day_id   String
+}
+
+model exercise {
+  id       String   @id @default(uuid())
+  date     DateTime @default(now())
+  duration Int
+  type     String
+  time     DateTime
+  intensity String
+  fasted  Boolean @default(false)
+
+  day      day      @relation(fields: [day_id], references: [id])
+  day_id   String
+
+  exercises exercises[]
+
+}
+
+model exercises {
+  id      String   @id @default(uuid())
+  name    String
+  sets    Int
+  reps    Int
+  exercise exercise @relation(fields: [exercise_id], references: [id])
+  exercise_id String
+}
+
+model meditation {
+  id       String   @id @default(uuid())
+  date     DateTime @default(now())
+  duration Int
+  time     DateTime
+
+  day      day      @relation(fields: [day_id], references: [id])
+  day_id   String
+}
+
+model nightly_routine {
+  id       String   @id @default(uuid())
+  date     DateTime @default(now())
+  time     DateTime
+  read    Boolean @default(false)
+  planned Boolean @default(false)
+  stretched Boolean @default(false)
+  affirmations  Boolean @default(false)
+  journaling  Boolean @default(false)
+
+  day     day      @relation(fields: [day_id], references: [id])
+  day_id  String @unique
+}
+
+
+model health {
+  id       String   @id @default(uuid())
+  date     DateTime @default(now())
+  weight   Float?
+  body_fat Float?
+  muscle_mass Float?
+  water    Float?
+  bone_mass Float?
+  bmi      Float?
+  visceral_fat Int?
+  metabolic_age Int?
+  bmr      Int?
+  protein  Int?
+  minerals Int?
+  vitamins Int?
+  time    DateTime
+
+  energy_levels Int
+  physical_health Int
+  mental_health Int
+
+  day      day      @relation(fields: [day_id], references: [id])
+  day_id   String
+
+}
+// medications
+
+enum TimeOfDay {
+  Morning
+  Afternoon
+  Evening
+  Night
+}
+
+enum Supplements {
+  BComplexPlus
+  Tumeric
+  D3
+  K2
+  B12
+  B6
+  B1
+  C
+  A
+  Zinc
+  Omega3
+  Iodine
+  MagnesiumThreonate
+  Apigenin
+  NAC
+  LTheanine
+  Probiotic
 }
