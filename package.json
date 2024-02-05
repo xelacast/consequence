@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "consequence",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -13,6 +13,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.29.5",
     "@prisma/client": "^5.6.0",
     "@t3-oss/env-nextjs": "^0.7.1",
     "@tanstack/react-query": "^4.36.1",
