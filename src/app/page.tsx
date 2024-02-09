@@ -2,7 +2,6 @@ import { UserButton } from "@clerk/nextjs";
 import { NextApiRequest } from "next";
 
 import { auth } from "@clerk/nextjs";
-import { SupplementForm } from "./components/forms/supplements";
 
 export default async function Home() {
   const { userId }: { userId: string | null } = auth();
@@ -17,9 +16,7 @@ export default async function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center ">
       <form action={createDay}>
-        <div id="supplements">
-          <SupplementForm />
-        </div>
+        <div id="supplements"></div>
         <input type="submit" value="Submit" />
       </form>
     </main>
