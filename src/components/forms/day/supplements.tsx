@@ -1,118 +1,149 @@
 "use client";
 
-import { type UseFormReturn, useFieldArray } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
-import { formSchema } from "../day/schema";
+import { supplementSchema } from "../day/schema";
 import { FormContainer } from "~/components/ui/formcontainer";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Select from "react-select";
+import { Supplements, TimeOfDay } from "@prisma/client";
+import { createSupplementAction } from "~/server/actions/supplementAction";
 
-export function SupplementForm({
-  form,
-}: {
-  form: UseFormReturn<z.infer<typeof formSchema>>;
-}) {
-  const handleAddSupp = () => {
-    const { supplement_name, supplement_amount, supplement_time_of_day } =
-      form.getValues();
-    if (!supplement_name) {
-      return;
-    }
-    appendSupp({
-      supplement: supplement_name,
-      amount: supplement_amount,
-      time_of_day: supplement_time_of_day,
-    });
+const supplementOptions = Object.values(Supplements).map((supplement) => {
+  return { label: supplement, value: supplement.toLowerCase() };
+}) as Options[];
 
-    form.setValue("supplement_name", "");
-    form.setValue("supplement_amount", 0);
-    form.setValue("supplement_time_of_day", 0);
-  };
+const timeOptions = Object.values(TimeOfDay).map((time) => {
+  return { label: time, value: time.toLowerCase() };
+}) as Options[];
 
-  const {
-    fields: supplementFields,
-    append: appendSupp,
-    remove: removeSupp,
-  } = useFieldArray({
-    control: form.control,
-    name: "supplements",
-    shouldUnregister: true,
+type Options = { value: string; label: string };
+
+export const SupplementFormV2 = () => {
+  const form = useForm<z.infer<typeof supplementSchema>>({
+    resolver: zodResolver(supplementSchema),
+    defaultValues: {
+      supplements: [],
+    },
   });
 
+  const { append, fields, remove } = useFieldArray({
+    name: "supplements",
+    control: form.control,
+  });
+
+  const onSubmit = async (values: z.infer<typeof supplementSchema>) => {
+    await createSupplementAction(values);
+  };
+
+  const handleAddSupp = () => {
+    const { name, amount, time_of_day } = form.getValues();
+
+    if (!name || !amount || !time_of_day) {
+      return;
+    }
+    append({
+      supplement: name,
+      amount,
+      time_of_day,
+    });
+
+    form.setValue("name", null);
+    form.setValue("amount", null);
+    form.setValue("time_of_day", null);
+  };
+
   return (
-    <FormContainer>
-      <>
-        <h5>Supplements</h5>
-        <FormField
-          control={form.control}
-          name="supplement_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Supplement Name" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="supplement_amount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Amount (mg)</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="number"
-                  onChange={(e) => field.onChange(+e.target.value)}
-                  value={field.value == 0 ? "" : field.value}
-                  placeholder="Supplement Amount (mg)"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="supplement_time_of_day"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Time Taken</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Time Taken"
-                  onChange={(e) => field.onChange(+e.target.value)}
-                  value={field.value == 0 ? "" : field.value}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="button" onClick={handleAddSupp}>
-          Add Supplement
-        </Button>
-        {supplementFields.map((field, index) => (
-          <ul key={field.id}>
-            <li>
-              <span>{field.supplement}</span>
-              <span>{field.amount} (mg)</span>
-              <span>{field.time_of_day}</span>
-            </li>
-          </ul>
-        ))}
-      </>
-    </FormContainer>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <FormContainer>
+          <>
+            <h5>Supplements</h5>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Select
+                      options={supplementOptions}
+                      isSearchable
+                      // @ts-ignore
+                      onChange={(e) => field.onChange(e.value)}
+                      placeholder="Supplement Name"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Amount (mg)</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      onChange={(e) => field.onChange(+e.target.value)}
+                      value={field.value || ""}
+                      placeholder="Supplement Amount (mg)"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="time_of_day"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Time Taken</FormLabel>
+                  <FormControl>
+                    <Select
+                      placeholder="Time of Day"
+                      options={timeOptions}
+                      // @ts-ignore
+                      onChange={(e) => field.onChange(e.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="button" onClick={handleAddSupp}>
+              Add Supplement
+            </Button>
+            <ul>
+              {fields.map((field, index) => (
+                <li key={field.id}>
+                  <span>{field.supplement}</span>
+                  <span>{field.amount} (mg)</span>
+                  <span>{field.time_of_day}</span>
+                  <Button type="button" onClick={() => remove(index)}>
+                    Remove
+                  </Button>
+                </li>
+              ))}
+            </ul>
+            <Button type="submit">Submit</Button>
+          </>
+        </FormContainer>
+      </form>
+    </Form>
   );
-}
+};

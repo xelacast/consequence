@@ -1,10 +1,10 @@
-import { UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { formSchema } from "../day/schema";
-import { Label } from "~/components/ui/label";
+import { sleepSchema } from "../day/schema";
 import { Input } from "~/components/ui/input";
 import { FormContainer } from "~/components/ui/formcontainer";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -12,74 +12,103 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 
-export const SleepForm = ({
-  form,
-}: {
-  form: UseFormReturn<z.infer<typeof formSchema>>;
-}) => {
+import Select from "react-select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createSleepAction } from "~/server/actions/sleepAction";
+import { Button } from "~/components/ui/button";
+
+const options = [
+  { value: "good", label: "Good" },
+  { value: "bad", label: "Bad" },
+] as Options[];
+
+interface Options {
+  value: string;
+  label: string;
+}
+
+export const SleepFormV2 = () => {
+  const form = useForm<z.infer<typeof sleepSchema>>({
+    resolver: zodResolver(sleepSchema),
+    defaultValues: {
+      hours: 0,
+      minutes: 0,
+      quality: [""],
+      rating: 0,
+    },
+  });
+  const onSubmit = async (values: z.infer<typeof sleepSchema>) => {
+    await createSleepAction(values);
+  };
   return (
-    <FormContainer>
-      <>
-        <h5>Sleep Quality and Duration</h5>
-        <FormField
-          control={form.control}
-          name="sleep_quality"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Quality</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Sleep Quality" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="sleep_duration"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Duration (Hours)</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Sleep Duration (hrs)"
-                  pattern="[0,9]"
-                  type="number"
-                  onChange={(e) => field.onChange(+e.target.value)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="sleep_wake_time"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Wake Time</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Sleep Wake Time" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="sleep_bed_time"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sleep Bed Time</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Bed Time" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </>
-    </FormContainer>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <FormContainer>
+          <>
+            <h5>Sleep Quality and Duration</h5>
+            <FormField
+              control={form.control}
+              name="rating"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quality</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder="Sleep Rating"
+                      onChange={(e) => field.onChange(+e.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="quality"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quality</FormLabel>
+                  <FormControl>
+                    <Select
+                      closeMenuOnSelect={false}
+                      options={options}
+                      onChange={(e) =>
+                        field.onChange(e.map((c: any) => c.value))
+                      }
+                      isMulti
+                      placeholder="Sleep Quality"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="hours"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Duration (Hours)</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value || ""}
+                      placeholder="Sleep Duration (hrs)"
+                      pattern="[0,9]"
+                      type="number"
+                      onChange={(e) => field.onChange(+e.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </>
+        </FormContainer>
+      </form>
+    </Form>
   );
 };
