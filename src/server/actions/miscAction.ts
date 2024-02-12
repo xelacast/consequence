@@ -1,3 +1,5 @@
+"use server";
+
 import { currentUser } from "@clerk/nextjs";
 import { revalidateTag } from "next/cache";
 import { z } from "zod";
