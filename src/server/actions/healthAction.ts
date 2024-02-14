@@ -1,7 +1,7 @@
 "use server";
 
-import { z } from "zod";
-import { healthSchema } from "~/components/forms/day/schema";
+import type { z } from "zod";
+import type { healthSchema } from "~/components/forms/day/schema";
 import { db } from "../db";
 import { currentUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
@@ -78,7 +78,6 @@ export const currentDay = (date: string | Date) => {
   // get start of day MM/DD/YYYY
   const today = dayjs(date).startOf("day").toISOString();
   const endOfDay = dayjs(date).endOf("day").toISOString();
-  console.log(today, endOfDay);
 
   // get end of day
   return { today, endOfDay };

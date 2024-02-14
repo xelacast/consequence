@@ -1,7 +1,7 @@
 "use server";
 
-import { z } from "zod";
-import { sleepSchema } from "~/components/forms/day/schema";
+import type { z } from "zod";
+import type { sleepSchema } from "~/components/forms/day/schema";
 import { db } from "../db";
 import { currentUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
@@ -36,7 +36,7 @@ export async function createSleepAction(formData: z.infer<typeof sleepSchema>) {
     });
     if (day) {
       // create sleep attached to the day
-      const sleep = await db.sleep.create({
+      await db.sleep.create({
         data: {
           rating: formData.rating,
           quality: formData.quality,
@@ -53,7 +53,7 @@ export async function createSleepAction(formData: z.infer<typeof sleepSchema>) {
           user: { connect: { clerk_id: id, email: emailAddress } },
         },
       });
-      const sleep = await db.sleep.create({
+      await db.sleep.create({
         data: {
           rating: formData.rating,
           quality: formData.quality,

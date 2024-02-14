@@ -1,7 +1,7 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { WebhookEvent } from "@clerk/nextjs/server";
-import { createUser, deleteUser } from "~/server/clerkweb/user";
+import { type WebhookEvent } from "@clerk/nextjs/server";
+import { createUser } from "~/server/clerkweb/user";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   }
 
   // Get the body
-  const payload = await req.json();
+  const payload = await req.json(); // eslint-disable-line
   const body = JSON.stringify(payload);
 
   // Create a new Svix instance with your secret.
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
   // * For now (Clerk has typescript support https://clerk.com/docs/integrations/webhooks)
   switch (eventType) {
     case "user.created":
-      const email = evt.data.email_addresses[0]?.email_address!;
+      const email = evt.data.email_addresses[0]?.email_address!; //eslint-disable-line
       try {
         if (!id) throw new Error("No ID found");
         await createUser(email, id);

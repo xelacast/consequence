@@ -1,5 +1,5 @@
 import { type UseFormReturn, useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 import { FormContainer } from "~/components/ui/formcontainer";
 import { Checkbox } from "~/components/ui/checkbox";
 import {
@@ -21,7 +21,7 @@ export const MiscForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof miscSchema>) => {
-    const res = await createMiscAction(values);
+    await createMiscAction(values);
   };
 
   return (

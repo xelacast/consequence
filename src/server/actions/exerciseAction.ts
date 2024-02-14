@@ -1,8 +1,8 @@
 "use server";
 
-import { exerciseSchema } from "~/components/forms/day/schema";
+import type { exerciseSchema } from "~/components/forms/day/schema";
 import { db } from "../db";
-import { z } from "zod";
+import type { z } from "zod";
 import { currentUser } from "@clerk/nextjs";
 import { currentDay } from "./healthAction";
 import { revalidateTag } from "next/cache";

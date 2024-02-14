@@ -1,11 +1,4 @@
-import { UserButton } from "@clerk/nextjs";
-import { NextApiRequest } from "next";
-
-import { auth } from "@clerk/nextjs";
-
 export default async function Home() {
-  const { userId }: { userId: string | null } = auth();
-
   // Need form action
   const createDay = async (formData: FormData) => {
     "use server";

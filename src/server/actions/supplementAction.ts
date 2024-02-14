@@ -1,6 +1,6 @@
 "use server";
 
-import { z } from "zod";
+import type { z } from "zod";
 import { supplementSchema } from "~/components/forms/day/schema";
 import { db } from "../db";
 import { currentUser } from "@clerk/nextjs";
@@ -41,7 +41,6 @@ export async function createSupplementAction(
         day_id: dayId,
       };
     });
-
   // find the day
   let day: daySchema | null = null;
   try {
@@ -49,7 +48,7 @@ export async function createSupplementAction(
     day = await db.day.findFirst({
       where: {
         date: { gte: today, lte: endOfDay },
-        user: { clerk_id: id, email: emailAddress },
+        user: { clerk_id: id },
       },
     });
     if (day) {
@@ -70,7 +69,6 @@ export async function createSupplementAction(
       });
     }
   } catch (err) {
-    console.log("error", err);
     return { error: "Error on server. Status 500" };
   }
 

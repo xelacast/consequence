@@ -1,6 +1,6 @@
-import { UseFormReturn, useForm } from "react-hook-form";
-import { z } from "zod";
-import { healthSchema, formSchema } from "../day/schema";
+import { useForm } from "react-hook-form";
+import type { z } from "zod";
+import { healthSchema } from "../day/schema";
 import { Input } from "~/components/ui/input";
 import { FormContainer } from "~/components/ui/formcontainer";
 import {
@@ -20,40 +20,6 @@ import {
   MentalHealthDescriptors,
   PhysicalHealthDescriptors,
 } from "@prisma/client";
-
-const options = [
-  { value: "good", label: "good" },
-  { value: "restful", label: "restful" },
-  { value: "peaceful", label: "peaceful" },
-  { value: "deep", label: "deep" },
-  { value: "uninterrupted", label: "uninterrupted" },
-  { value: "satisfying", label: "satisfying" },
-  { value: "rejuvenating", label: "rejuvenating" },
-  { value: "refreshing", label: "refreshing" },
-  { value: "calm", label: "calm" },
-  { value: "comfortable", label: "comfortable" },
-  { value: "sound", label: "sound" },
-  { value: "healing", label: "healing" },
-  { value: "relaxing", label: "relaxing" },
-  { value: "serene", label: "serene" },
-  { value: "consistent", label: "consistent" },
-  { value: "blissful", label: "blissful" },
-  { label: "restless", value: "restless" },
-  { label: "troubled", value: "troubled" },
-  { label: "light", value: "light" },
-  { label: "fragmented", value: "fragmented" },
-  { label: "unsatisfying", value: "unsatisfying" },
-  { label: "draining", value: "draining" },
-  { label: "exhausting", value: "exhausting" },
-  { label: "aitated", value: "aitated" },
-  { label: "uncomfortable", value: "uncomfortable" },
-  { label: "disturbed", value: "disturbed" },
-  { label: "harmful", value: "harmful" },
-  { label: "tense", value: "tense" },
-  { label: "chaotic", value: "chaotic" },
-  { label: "irregular", value: "irregular" },
-  { label: "miserable", value: "miserable" },
-] as Option[];
 
 interface Option {
   value: string;
@@ -129,7 +95,7 @@ export const HealthFormV2 = () => {
                       isMulti
                       options={mentalHealthOptions}
                       onChange={(e) =>
-                        field.onChange(e.map((c: any) => c.value))
+                        field.onChange(e.map((c: { value: string }) => c.value))
                       }
                     />
                   </FormControl>
@@ -197,7 +163,9 @@ export const HealthFormV2 = () => {
                       options={physicalHealthOptions}
                       onChange={(e) => {
                         console.log(e);
-                        return field.onChange(e.map((c: any) => c.value));
+                        return field.onChange(
+                          e.map((c: { value: string }) => c.value),
+                        );
                       }}
                     />
                   </FormControl>

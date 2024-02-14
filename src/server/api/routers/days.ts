@@ -7,7 +7,7 @@ export const daysRouter = createTRPCRouter({
   //     secret: `${ctx.auth.userId} is using a protected procedure!`,
   //   };
   // }),
-  get: publicProcedure.query(({ ctx }) => {
+  get: publicProcedure.query(({}) => {
     // console.log(ctx.user.userId);
     return { message: "Hello from the server!" };
   }),

@@ -2,8 +2,8 @@
 
 import { currentUser } from "@clerk/nextjs";
 import { revalidateTag } from "next/cache";
-import { z } from "zod";
-import { miscSchema } from "~/components/forms/day/schema";
+import type { z } from "zod";
+import type { miscSchema } from "~/components/forms/day/schema";
 import { currentDay } from "./healthAction";
 import { db } from "../db";
 
@@ -20,8 +20,6 @@ export const createMiscAction = async (
   const { id, emailAddresses } = user;
   if (emailAddresses.length < 1 || !emailAddresses[0]) return;
   const { emailAddress } = emailAddresses[0];
-
-  if (!user) return { error: "error", status: 403, message: "Unothorized" };
 
   // create data format function with dayid as argument
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { supplementSchema } from "../day/schema";
@@ -79,8 +79,10 @@ export const SupplementFormV2 = () => {
                     <Select
                       options={supplementOptions}
                       isSearchable
-                      // @ts-ignore
-                      onChange={(e) => field.onChange(e.value)}
+                      onChange={(e) =>
+                        // @ts-expect-error This is a bug in the react-select types
+                        field.onChange(e.value)
+                      }
                       placeholder="Supplement Name"
                     />
                   </FormControl>
@@ -99,7 +101,7 @@ export const SupplementFormV2 = () => {
                       {...field}
                       type="number"
                       onChange={(e) => field.onChange(+e.target.value)}
-                      value={field.value || ""}
+                      value={field.value == 0 ? field.value : field.value ?? ""}
                       placeholder="Supplement Amount (mg)"
                     />
                   </FormControl>
@@ -117,7 +119,7 @@ export const SupplementFormV2 = () => {
                     <Select
                       placeholder="Time of Day"
                       options={timeOptions}
-                      // @ts-ignore
+                      // @ts-expect-error This is a bug in the react-select types
                       onChange={(e) => field.onChange(e.value)}
                     />
                   </FormControl>

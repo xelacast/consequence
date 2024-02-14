@@ -51,15 +51,18 @@ export const sleepSchema = z.object({
 
 export const supplementSchema = z.object({
   name: z.nativeEnum(Supplements).nullable(),
+  // name: z.string().optional(),
   amount: z.number().nullable(),
   time_of_day: z.nativeEnum(TimeOfDay).nullable(),
-  supplements: z.array(
-    z.object({
-      supplement: z.nativeEnum(Supplements),
-      amount: z.number(),
-      time_of_day: z.nativeEnum(TimeOfDay).nullable(),
-    }),
-  ),
+  supplements: z
+    .array(
+      z.object({
+        supplement: z.nativeEnum(Supplements),
+        amount: z.number(),
+        time_of_day: z.nativeEnum(TimeOfDay).nullable(),
+      }),
+    )
+    .min(1),
 });
 
 export const exerciseSchema = z.object({

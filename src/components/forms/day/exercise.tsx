@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 import { exerciseSchema } from "../day/schema";
 import { ExerciseType } from "@prisma/client";
 import { FormContainer } from "~/components/ui/formcontainer";
@@ -72,6 +72,7 @@ export const ExerciseFormV2 = () => {
       .set("seconds", 0)
       .toISOString();
     values.time_of_day = date; // correctly formated isostring date
+    console.log(values);
     await createExerciseAction(values);
   };
 
@@ -90,7 +91,7 @@ export const ExerciseFormV2 = () => {
                   <FormControl>
                     <Select
                       options={exerciseTypeOptions}
-                      // @ts-ignore
+                      // @ts-expect-error This is a bug in the react-select types
                       onChange={(e) => field.onChange(e.value)}
                       placeholder="Exercise Type"
                     />
@@ -107,7 +108,7 @@ export const ExerciseFormV2 = () => {
                   <FormLabel>Duration</FormLabel>
                   <FormControl>
                     <Select
-                      // @ts-ignore
+                      // @ts-expect-error This is a bug in the react-select types
                       onChange={(e) => field.onChange(+e.value)}
                       options={exerciseDurationOptions}
                       placeholder="Exercise Duration"
@@ -126,7 +127,7 @@ export const ExerciseFormV2 = () => {
                   <FormControl>
                     <Select
                       options={exerciseIntensityOptions}
-                      // @ts-ignore
+                      // @ts-expect-error This is a bug in the react-select types
                       onChange={(e) => field.onChange(e.value)}
                       placeholder="Exercise Intensity"
                     />

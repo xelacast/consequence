@@ -7,3 +7,15 @@ Everyone wants to live a better life and change themselves, but how do they know
 Consequence, know what affects you.
 
 Supplement tracking for physical and mental health. Future updates turn it into a essential nutrients tracker and macro tracker. Claim is Nutrients are one of the pillars of health for a healthy brain. Misinformation has been going on for too long. We need to help people get their livdes togother.
+
+## Features
+
+Users can look back on their history and edit days
+Users can see a calendar view of their application
+Users can set goals.
+Users can see their progress with goals.
+Users can see their successfully goals/non successful goals
+Users can add as many habits as they want to track
+Users are presented with a dashboard view of their metrics
+
+Users can choose metrics for supplement intake

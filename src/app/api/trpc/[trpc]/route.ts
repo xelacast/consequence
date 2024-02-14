@@ -5,17 +5,6 @@ import { env } from "~/env";
 import { appRouter } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
 
-import { SignedInAuthObject, SignedOutAuthObject } from "@clerk/nextjs/server";
-
-export interface AuthContext {
-  auth: SignedInAuthObject | SignedOutAuthObject;
-}
-
-export const createContextInner = async ({ auth }: AuthContext) => {
-  return {
-    auth,
-  };
-};
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
  * handling a HTTP request (e.g. when you make requests from Client Components).

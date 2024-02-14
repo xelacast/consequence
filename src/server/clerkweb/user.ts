@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client/extension";
-const prisma = new PrismaClient();
+import { db } from "../db";
 
 export const createUser = async (email: string, id: string) => {
-  const user = await prisma.user.create({
+  const user = await db.user.create({
     data: {
       id,
       email,
@@ -12,7 +11,7 @@ export const createUser = async (email: string, id: string) => {
 };
 
 export const deleteUser = async (id?: string) => {
-  const user = await prisma.user.update({
+  const user = await db.user.update({
     where: {
       id,
     },

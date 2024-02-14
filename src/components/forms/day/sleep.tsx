@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 import { sleepSchema } from "../day/schema";
 import { Input } from "~/components/ui/input";
 import { FormContainer } from "~/components/ui/formcontainer";
@@ -75,7 +75,7 @@ export const SleepFormV2 = () => {
                       closeMenuOnSelect={false}
                       options={options}
                       onChange={(e) =>
-                        field.onChange(e.map((c: any) => c.value))
+                        field.onChange(e.map((c: { value: string }) => c.value))
                       }
                       isMulti
                       placeholder="Sleep Quality"
