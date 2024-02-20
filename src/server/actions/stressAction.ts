@@ -1,27 +1,19 @@
 "use server";
 
 import type { z } from "zod";
-import { supplementSchema } from "~/components/forms/day/schema";
+import type { stressSchema } from "~/components/forms/day/schema";
 import { db } from "../db";
 import { currentUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
 import { revalidateTag } from "next/cache";
 import { currentDay } from "~/lib/dates";
-import { type day as daySchema } from "@prisma/client";
 
-const postSupplementSchema = supplementSchema.omit({
-  amount: true,
-  time_of_day: true,
-  name: true,
-});
-
-export async function createSupplementAction(
-  formData: z.infer<typeof postSupplementSchema>,
+export async function createStressAction(
+  formData: z.infer<typeof stressSchema>,
 ) {
-  "use server"; // is this needed if the function is in a server component?
+  "use server";
 
-  const date = formData.date;
-
+  // alter data
   const user = await currentUser();
 
   if (!user) return; // throw error. This wouldn't be possible bc user has to be logged into this page to access this.
@@ -32,42 +24,40 @@ export async function createSupplementAction(
 
   if (!user?.id) return { error: "Forbidden", status: 403 };
 
-  const { startOfDay, endOfDay } = currentDay(dayjs(date).toISOString());
+  const { startOfDay, endOfDay } = currentDay(new Date());
 
-  const data = (dayId: string) =>
-    formData.supplements.map((supplement) => {
-      return {
-        name: supplement.supplement,
-        amount: supplement.amount,
-        time_taken: supplement.time_taken,
-        measurement: supplement.measurement,
-        day_id: dayId,
-      };
-    });
+  const data = (day_id: string) => ({
+    rating: formData.rating,
+    notes: formData.notes,
+    symptoms: formData.symptoms,
+    time_of_day: formData.time_of_day,
+    day_id,
+  });
+
   // find the day
-  let day: daySchema | null = null;
+  let day;
   try {
     // find day or create day
     day = await db.day.findFirst({
       where: {
         date: { gte: startOfDay, lte: endOfDay },
-        user: { clerk_id: id },
+        user: { clerk_id: id, email: emailAddress },
       },
     });
     if (day) {
-      // create supplements attached to the day
-      await db.supplements.createMany({
+      // create sleep attached to the day
+      await db.stress.create({
         data: data(day.id),
       });
     } else {
-      // create day and supplements
+      // create day and health
       day = await db.day.create({
         data: {
           date: dayjs().toISOString(),
           user: { connect: { clerk_id: id, email: emailAddress } },
         },
       });
-      await db.supplements.createMany({
+      await db.stress.create({
         data: data(day.id),
       });
     }

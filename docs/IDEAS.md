@@ -10,12 +10,24 @@ Supplement tracking for physical and mental health. Future updates turn it into 
 
 ## Features
 
-Users can look back on their history and edit days
-Users can see a calendar view of their application
-Users can set goals.
-Users can see their progress with goals.
-Users can see their successfully goals/non successful goals
-Users can add as many habits as they want to track
-Users are presented with a dashboard view of their metrics
+- [ ] Users can look back on their history and edit days
+- [ ] Users can see a calendar view of their application
+- [ ] Users can set goals.
+- [ ] Users can see their progress with goals.
+- [ ] Users can see their successfully goals/non successful goals
+- [ ] Users can add as many habits as they want to track
+- [ ] Users are presented with a dashboard view of their metrics
 
-Users can choose metrics for supplement intake
+- [x] Users can choose metrics for supplement intake
+- [x] Users can choose between mg and mcg in supplements form [link](./TODO.md)
+
+- [ ] UX: Users can have configured supplement values to add instead of filling out a form everytime
+
+- [ ] Users can see which data they have submitted in the forms and update
+- [ ] Users are provided another "window" to view the data they submitted
+
+### Stat Tracking (Gamification)
+
+Users can view a spider graph of mental health, physical health, stress, and other categories that fi in the top 5 categories for life and wellness
+
+I would love to gamify this and have a personal stat card to view for yourself and maybe show others? I don't know if showing other people would be benficial/usable.

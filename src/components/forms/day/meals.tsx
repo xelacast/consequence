@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import { exerciseSchema } from "../day/schema";
+import { exerciseSchema, mealsSchema } from "../day/schema";
 import { ExerciseType } from "@prisma/client";
 import { FormContainer } from "~/components/ui/formcontainer";
 import { Checkbox } from "~/components/ui/checkbox";
@@ -48,26 +48,26 @@ type Options = {
   value: string;
 };
 
-export const ExerciseFormV2 = () => {
-  const form = useForm<z.infer<typeof exerciseSchema>>({
-    resolver: zodResolver(exerciseSchema),
+export const MealsForm = () => {
+  const form = useForm<z.infer<typeof mealsSchema>>({
+    resolver: zodResolver(mealsSchema),
     defaultValues: {
       // exercise_type: "",
-      duration: 0,
+      // duration: 0,
       // intensity: "",
       time_of_day: dayjs().hour() + ":" + dayjs().minute(),
-      fasted: false,
+      // fasted: false,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof exerciseSchema>) => {
+  const onSubmit = async (values: z.infer<typeof mealsSchema>) => {
     // create exercise action
     // format the time before you send it to the server
 
     const date = datePickerFormater({ time: values.time_of_day });
 
     values.time_of_day = date; // correctly formated isostring date
-    await createExerciseAction(values);
+    // await createExerciseAction(values);
   };
 
   return (
@@ -78,10 +78,10 @@ export const ExerciseFormV2 = () => {
             <h5>Exercise</h5>
             <FormField
               control={form.control}
-              name="type"
+              name="meal"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Type</FormLabel>
+                  <FormLabel>Meal</FormLabel>
                   <FormControl>
                     <Select
                       options={exerciseTypeOptions}
@@ -94,42 +94,7 @@ export const ExerciseFormV2 = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Duration</FormLabel>
-                  <FormControl>
-                    <Select
-                      // @ts-expect-error This is a bug in the react-select types
-                      onChange={(e) => field.onChange(+e.value)}
-                      options={exerciseDurationOptions}
-                      placeholder="Exercise Duration"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="intensity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Intensity</FormLabel>
-                  <FormControl>
-                    <Select
-                      options={exerciseIntensityOptions}
-                      // @ts-expect-error This is a bug in the react-select types
-                      onChange={(e) => field.onChange(e.value)}
-                      placeholder="Exercise Intensity"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <FormField
               control={form.control}
               name="time_of_day"
@@ -152,22 +117,6 @@ export const ExerciseFormV2 = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="fasted"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start justify-center space-x-3 space-y-0 rounded-md border p-4 shadow">
-                  <FormLabel>Exercise Fasted</FormLabel>
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Submit</Button>
           </>
         </FormContainer>
       </form>

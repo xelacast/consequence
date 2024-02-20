@@ -6,6 +6,7 @@ import { db } from "../db";
 import { currentUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
 import { revalidateTag } from "next/cache";
+import { currentDay } from "~/lib/dates";
 
 export async function createHealthAction(
   formData: z.infer<typeof healthSchema>,
@@ -24,7 +25,7 @@ export async function createHealthAction(
   if (!user?.id) return;
 
   // create or connect to a day
-  const { today, endOfDay } = currentDay(new Date());
+  const { startOfDay, endOfDay } = currentDay(new Date());
 
   // find the day
   let day;
@@ -32,7 +33,7 @@ export async function createHealthAction(
     // find day or create day
     day = await db.day.findFirst({
       where: {
-        date: { gte: today, lte: endOfDay },
+        date: { gte: startOfDay, lte: endOfDay },
         user: { clerk_id: id, email: emailAddress },
       },
     });
@@ -73,12 +74,3 @@ export async function createHealthAction(
   // refresh cache
   // ? What if we dont want to refresh the page but refresh the cache?
 }
-
-export const currentDay = (date: string | Date) => {
-  // get start of day MM/DD/YYYY
-  const today = dayjs(date).startOf("day").toISOString();
-  const endOfDay = dayjs(date).endOf("day").toISOString();
-
-  // get end of day
-  return { today, endOfDay };
-};

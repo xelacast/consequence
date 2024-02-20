@@ -1,7 +1,15 @@
-import { DayForm } from "~/components/forms/day";
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+import { db } from "~/server/db";
+import { DatePicker } from "./components/datePicker";
+import React from "react";
 
-const Page = () => {
-  return <DayForm />;
-};
+import type { day } from "@prisma/client";
 
-export default Page;
+export default async function Page() {
+  return (
+    <div>
+      <DatePicker />
+    </div>
+  );
+}

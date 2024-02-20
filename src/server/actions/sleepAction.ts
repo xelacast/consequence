@@ -6,7 +6,7 @@ import { db } from "../db";
 import { currentUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
 import { revalidateTag } from "next/cache";
-import { currentDay } from "./healthAction";
+import { currentDay } from "~/lib/dates";
 
 export async function createSleepAction(formData: z.infer<typeof sleepSchema>) {
   "use server";
@@ -22,7 +22,7 @@ export async function createSleepAction(formData: z.infer<typeof sleepSchema>) {
 
   if (!user?.id) return { error: "Forbidden", status: 403 };
 
-  const { today, endOfDay } = currentDay(new Date());
+  const { startOfDay, endOfDay } = currentDay(new Date());
 
   // find the day
   let day;
@@ -30,7 +30,7 @@ export async function createSleepAction(formData: z.infer<typeof sleepSchema>) {
     // find day or create day
     day = await db.day.findFirst({
       where: {
-        date: { gte: today, lte: endOfDay },
+        date: { gte: startOfDay, lte: endOfDay },
         user: { clerk_id: id, email: emailAddress },
       },
     });

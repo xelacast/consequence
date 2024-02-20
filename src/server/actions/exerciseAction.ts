@@ -4,8 +4,9 @@ import type { exerciseSchema } from "~/components/forms/day/schema";
 import { db } from "../db";
 import type { z } from "zod";
 import { currentUser } from "@clerk/nextjs";
-import { currentDay } from "./healthAction";
+import { currentDay } from "../../lib/dates";
 import { revalidateTag } from "next/cache";
+import dayjs from "../../lib/dates";
 
 /**
  ** Be careful when you use this to let user back track data. We dont want a date of today for being used for a date of yesterday or prior dates
@@ -38,7 +39,7 @@ export const createExerciseAction = async (
   });
 
   // date initializer
-  const { today, endOfDay } = currentDay(new Date());
+  const { startOfDay, endOfDay } = currentDay(dayjs().toDate());
 
   // day finder/creator
   let day;
@@ -46,7 +47,7 @@ export const createExerciseAction = async (
     day = await db.day.findFirst({
       where: {
         user: { clerk_id: id },
-        date: { gte: today, lt: endOfDay },
+        date: { gte: startOfDay, lt: endOfDay },
       },
     });
     if (day) {
@@ -57,7 +58,7 @@ export const createExerciseAction = async (
       // if day does not exist, create day and exercise
       day = await db.day.create({
         data: {
-          date: today,
+          date: startOfDay,
           user: { connect: { clerk_id: id, email: emailAddress } },
         },
       });

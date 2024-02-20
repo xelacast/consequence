@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs";
 import { revalidateTag } from "next/cache";
 import type { z } from "zod";
 import type { miscSchema } from "~/components/forms/day/schema";
-import { currentDay } from "./healthAction";
+import { currentDay } from "~/lib/dates";
 import { db } from "../db";
 
 export const createMiscAction = async (
@@ -28,7 +28,7 @@ export const createMiscAction = async (
     day_id: dayId,
   });
   // date initializer
-  const { today, endOfDay } = currentDay(new Date());
+  const { startOfDay, endOfDay } = currentDay(new Date());
 
   // day finder/creator
   let day;
@@ -36,7 +36,7 @@ export const createMiscAction = async (
     day = await db.day.findFirst({
       where: {
         user: { clerk_id: id },
-        date: { gte: today, lt: endOfDay },
+        date: { gte: startOfDay, lt: endOfDay },
       },
     });
     if (day) {
@@ -47,7 +47,7 @@ export const createMiscAction = async (
       // if day does not exist, create day and exercise
       day = await db.day.create({
         data: {
-          date: today,
+          date: startOfDay,
           user: { connect: { clerk_id: id, email: emailAddress } },
         },
       });

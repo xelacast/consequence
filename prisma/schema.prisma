@@ -27,6 +27,7 @@ model user {
   allowed_to_login   Boolean   @default(true)
   clerk_id           String?
   day                day[]
+  created_at         DateTime  @default(now())
 
   @@unique([clerk_id, email, id])
   @@index([clerk_id, email])
@@ -45,6 +46,8 @@ model day {
   health          health[]
   // intermittent_fasting intermittent_fasting?
   form_misc        form_misc?
+  stress stress[]
+  meals meals[]
 
   @@index([date, user_id])
 }
@@ -58,7 +61,7 @@ model sleep {
   rating     Int
   wake_time  DateTime?
   sleep_time DateTime?
-
+  notes String?
   day    day    @relation(fields: [day_id], references: [id])
   day_id String @unique
 }
@@ -67,11 +70,25 @@ model supplements {
   id                String      @id @default(uuid())
   date              DateTime    @default(now())
   name              Supplements
-  amount            Int // in micrograms
+  amount            Int // in micrograms 1000mcg = 1mg 1000mg = 1g
   time_of_day_taken TimeOfDay?
+  time_taken        DateTime?
+  measurement       Measurements @default(mg)
 
   day    day    @relation(fields: [day_id], references: [id])
   day_id String
+}
+
+model stress {
+  id          String   @id @default(uuid())
+  date        DateTime @default(now())
+  rating      Int // higher is worse
+  time_of_day DateTime
+  stressors   String?
+  symptoms StressSymptoms[]
+  notes String?
+  day         day      @relation(fields: [day_id], references: [id])
+  day_id      String
 }
 
 model exercise {
@@ -82,6 +99,7 @@ model exercise {
   time_of_day DateTime
   intensity   String
   fasted      Boolean      @default(false)
+  notes String?
 
   day    day    @relation(fields: [day_id], references: [id])
   day_id String
@@ -96,6 +114,33 @@ model exercises {
   reps        Int
   exercise    exercise @relation(fields: [exercise_id], references: [id])
   exercise_id String
+}
+
+model meals {
+  id          String   @id @default(uuid())
+  date        DateTime @default(now())
+  meal        String
+  time_of_day DateTime
+  notes String?
+  healthy     Boolean  @default(true)
+  calorie_intake Int
+  day         day      @relation(fields: [day_id], references: [id])
+  macros macros?
+  day_id      String
+}
+
+model macros {
+  id          String   @id @default(uuid())
+  date        DateTime @default(now())
+  protein     Int?
+  carbs       Int?
+  fats        Int?
+  fiber       Int?
+  sugar       Int?
+  sodium      Int?
+  cholesterol Int?
+  meals meals     @relation(fields: [meals_id], references: [id])
+  meals_id       String @unique
 }
 
 model form_misc {
@@ -169,6 +214,7 @@ model health {
   mental_health               Int
   physical_health_description PhysicalHealthDescriptors[]
   mental_health_description   MentalHealthDescriptors[]
+  notes String?
 
   day    day    @relation(fields: [day_id], references: [id])
   day_id String
@@ -201,6 +247,10 @@ enum Supplements {
   nac
   ltheanine
   probiotic
+  ashwagandha
+  apple_cider_vinegar
+  lions_mane
+  folate
 }
 
 enum ExerciseType {
@@ -246,35 +296,90 @@ enum MentalHealthDescriptors {
 }
 
 enum PhysicalHealthDescriptors {
-  Energetic
-  Fit
-  Healthy
-  Strong
-  Flexible
-  Wellrested
-  Active
-  Vital
-  Robust
-  Nourished
-  Agile
-  Steady
-  Balanced
-  Hydrated
-  Tired
-  Weak
-  Unwell
-  Sick
-  Injured
-  Painful
-  Fatigued
-  Frail
-  Achy
-  Exhausted
-  Feeble
-  Ill
-  Suffering
-  Debilitated
-  Inflamed
-  Diseased
-  Unhealthy
+  achy
+active
+agile
+balanced
+debilitated
+diseased
+energetic
+exhausted
+fatigued
+feeble
+fit
+flexible
+frail
+healthy
+hydrated
+ill
+inflamed
+injured
+nourished
+painful
+robust
+sick
+steady
+strong
+suffering
+tired
+unwell
+vital
+weak
+wellrested
+unhealthy
+}
+
+enum Measurements {
+  mg
+  mcg
+  g
+  kg
+  cal
+  lb
+  oz
+  ml
+  l
+}
+
+enum StressSymptoms {
+  heart_palpitations
+  alcohol_misuse
+anger
+angry_outbursts
+anxiety
+chest_pain
+decreased_energy
+decreased_sex_drive
+depression
+difficulty_relaxing
+drug_misuse
+exercising_less_often
+fatigue
+dizzy
+lightheaded
+overwhelmed
+forgetfulness
+headaches
+increased_sex_drive
+irritability
+lack_of_focus
+lack_of_motivation
+muscle_pain
+muscle_tension
+nail_biting
+negative_thinking
+neglecting_responsibilities
+overeating
+pacing
+persistent_worry
+pessimism
+poor_judgment
+racing_thoughts
+restlessness
+sadness
+sleep_problems
+social_withdrawal
+stomach_upset
+tobacco_use
+undereating
 }

@@ -2,7 +2,9 @@ import { z } from "zod";
 
 import {
   ExerciseType,
+  Measurements,
   MentalHealthDescriptors,
+  StressSymptoms,
   Supplements,
   TimeOfDay,
 } from "@prisma/client";
@@ -47,22 +49,39 @@ export const sleepSchema = z.object({
   minutes: z.number(),
   quality: z.array(z.string()),
   rating: z.number(),
+  notes: z.string().optional(),
 });
 
 export const supplementSchema = z.object({
+  date: z.string(),
   name: z.nativeEnum(Supplements).nullable(),
   // name: z.string().optional(),
   amount: z.number().nullable(),
   time_of_day: z.nativeEnum(TimeOfDay).nullable(),
+  time_taken: z.string().nullable(),
+  measurement: z
+    .object({
+      label: z.string(),
+      value: z.nativeEnum(Measurements),
+    })
+    .nullable(),
   supplements: z
     .array(
       z.object({
         supplement: z.nativeEnum(Supplements),
         amount: z.number(),
-        time_of_day: z.nativeEnum(TimeOfDay).nullable(),
+        measurement: z.nativeEnum(Measurements),
+        time_taken: z.string(),
       }),
     )
     .min(1),
+});
+
+export const stressSchema = z.object({
+  rating: z.number().max(10).min(1),
+  notes: z.string().optional(),
+  symptoms: z.array(z.nativeEnum(StressSymptoms)).max(5),
+  time_of_day: z.string(),
 });
 
 export const exerciseSchema = z.object({
@@ -71,6 +90,7 @@ export const exerciseSchema = z.object({
   intensity: z.enum(["low", "medium", "high"]),
   time_of_day: z.string(),
   fasted: z.boolean().default(false),
+  notes: z.string().optional(),
 });
 
 export const healthSchema = z.object({
@@ -82,6 +102,24 @@ export const healthSchema = z.object({
     .max(5)
     .optional(),
   energy_level: z.number().max(10).min(1),
+  notes: z.string().optional(),
+});
+
+export const mealsSchema = z.object({
+  meal: z.string(),
+  notes: z.string().optional(),
+  time_of_day: z.string(),
+  calorie_intake: z.number().optional(),
+  macros: z
+    .object({
+      protein: z.number().nullable(),
+      carbs: z.number().nullable(),
+      fats: z.number().nullable(),
+      sugars: z.number().nullable(),
+      fiber: z.number().nullable(),
+      sodium: z.number().nullable(),
+    })
+    .nullable(),
 });
 
 export const miscSchema = z.object({
