@@ -49,5 +49,7 @@ Feb 14th, 2024
 
 - CRUD
 - [ ] I can look back in time and edit entries
-- [ ] I can see the journal/day entry based on the selected day
+- [x] I can see the journal/day entry based on the selected day
 - [ ] Health descriptors are not being saved correctly. Fix this asap
+- [ ] Zod Schema is hard to work with for the use case I want=
+- [ ] Users are required to fill out health, stress, and sleep. These are three things that anybody can describe at a given moment of the day.

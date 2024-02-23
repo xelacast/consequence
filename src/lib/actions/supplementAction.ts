@@ -2,7 +2,7 @@
 
 import type { z } from "zod";
 import { supplementSchema } from "~/components/forms/day/schema";
-import { db } from "../db";
+import { db } from "../../server/db";
 import { currentUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
 import { revalidateTag } from "next/cache";
@@ -20,7 +20,7 @@ export async function createSupplementAction(
 ) {
   "use server"; // is this needed if the function is in a server component?
 
-  const date = formData.date;
+  // const date = formData.date;
 
   const user = await currentUser();
 

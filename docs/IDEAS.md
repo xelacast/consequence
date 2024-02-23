@@ -31,3 +31,26 @@ Supplement tracking for physical and mental health. Future updates turn it into 
 Users can view a spider graph of mental health, physical health, stress, and other categories that fi in the top 5 categories for life and wellness
 
 I would love to gamify this and have a personal stat card to view for yourself and maybe show others? I don't know if showing other people would be benficial/usable.
+
+### Form Day Creation
+
+Required fields are sleep, stress, health. Optional fields are: exercise, supplements, misc, alcohol intake, gluten intake.
+
+I want stress and health to have multiple entries. Maybe after the first entry add plus buttons to add more entries.
+
+Maybe add plus buttons on the side of the form to include as seperate forms.
+
+You wont do all of it every day. Some days youll exercise and some days you wont.
+
+How would I connect all these forms together with one submit button?
+
+I would need context and an optional/required schema. IE toggle the button and the form appears and the form is wrapped in the context. But maybe that form has a "picked" schema and a different submit process? How would it look for that? Where would I give/get access for that? To have multiple actions? Or do I need my own api system?
+
+First step is to be able to toggle and submit these forms to a submit function. This will get highly dependable fast.
+
+Use Different forms with different data steps that all work together. Use context to change state for submiting the forms?
+
+### Tech Debt/ Design Systems
+
+Right now I have the read process routed through the url and load a "new" component on the page change with router.push(...). I think page state will be better for render quality. Then if the user wants to update/create they will be routed accordingly to day/[date]/create or edit
+Need to look into some design patterns

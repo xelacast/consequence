@@ -1,16 +1,14 @@
 "use server";
 
 import type { z } from "zod";
-import type { healthSchema } from "~/components/forms/day/schema";
-import { db } from "../db";
+import type { sleepSchema } from "~/components/forms/day/schema";
+import { db } from "../../server/db";
 import { currentUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
 import { revalidateTag } from "next/cache";
 import { currentDay } from "~/lib/dates";
 
-export async function createHealthAction(
-  formData: z.infer<typeof healthSchema>,
-) {
+export async function createSleepAction(formData: z.infer<typeof sleepSchema>) {
   "use server";
 
   // alter data
@@ -22,9 +20,8 @@ export async function createHealthAction(
   if (emailAddresses.length < 1 || !emailAddresses[0]) return;
   const { emailAddress } = emailAddresses[0];
 
-  if (!user?.id) return;
+  if (!user?.id) return { error: "Forbidden", status: 403 };
 
-  // create or connect to a day
   const { startOfDay, endOfDay } = currentDay(new Date());
 
   // find the day
@@ -38,13 +35,13 @@ export async function createHealthAction(
       },
     });
     if (day) {
-      // create health attacked to the day
-      await db.health.create({
+      // create sleep attached to the day
+      await db.sleep.create({
         data: {
-          energy_levels: formData.energy_level,
-          mental_health: formData.mental_health,
-          physical_health: formData.physical_health,
-          time: dayjs().toISOString(),
+          rating: formData.rating,
+          quality: formData.quality,
+          hours: formData.hours,
+          minutes: 0,
           day: { connect: { id: day.id } },
         },
       });
@@ -56,12 +53,12 @@ export async function createHealthAction(
           user: { connect: { clerk_id: id, email: emailAddress } },
         },
       });
-      await db.health.create({
+      await db.sleep.create({
         data: {
-          energy_levels: formData.energy_level,
-          mental_health: formData.mental_health,
-          physical_health: formData.physical_health,
-          time: dayjs().toISOString(),
+          rating: formData.rating,
+          quality: formData.quality,
+          hours: formData.hours,
+          minutes: 0,
           day: { connect: { id: day.id } },
         },
       });

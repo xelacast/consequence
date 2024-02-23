@@ -25,11 +25,11 @@ model user {
   updated_at         DateTime  @default(now())
   username           String?
   allowed_to_login   Boolean   @default(true)
-  clerk_id           String?
+  clerk_id           String?   @unique
   day                day[]
   created_at         DateTime  @default(now())
 
-  @@unique([clerk_id, email, id])
+  @@unique([clerk_id, email])
   @@index([clerk_id, email])
 }
 
@@ -45,7 +45,7 @@ model day {
   nightly_routine nightly_routine?
   health          health[]
   // intermittent_fasting intermittent_fasting?
-  form_misc        form_misc?
+  form_misc       form_misc?
   stress stress[]
   meals meals[]
 
@@ -55,8 +55,8 @@ model day {
 model sleep {
   id         String    @id @default(uuid())
   date       DateTime  @default(now())
-  hours      Int
-  minutes    Int
+  hours      Float   @default(0.0)
+  minutes    Int?
   quality    String[]
   rating     Int
   wake_time  DateTime?

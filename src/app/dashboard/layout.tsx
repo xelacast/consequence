@@ -4,10 +4,10 @@ import { DashboardHeader } from "./components/nav";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <section>
+    <main>
       <DashboardHeader />
       {children}
-    </section>
+    </main>
   );
 };
 

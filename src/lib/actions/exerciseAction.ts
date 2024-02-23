@@ -1,14 +1,19 @@
 "use server";
 
-import { currentUser } from "@clerk/nextjs";
-import { revalidateTag } from "next/cache";
+import type { exerciseSchema } from "~/components/forms/day/schema";
+import { db } from "../../server/db";
 import type { z } from "zod";
-import type { miscSchema } from "~/components/forms/day/schema";
-import { currentDay } from "~/lib/dates";
-import { db } from "../db";
+import { currentUser } from "@clerk/nextjs";
+import { currentDay } from "../dates";
+import { revalidateTag } from "next/cache";
+import dayjs from "../dates";
 
-export const createMiscAction = async (
-  formData: z.infer<typeof miscSchema>,
+/**
+ ** Be careful when you use this to let user back track data. We dont want a date of today for being used for a date of yesterday or prior dates
+ */
+
+export const createExerciseAction = async (
+  formData: z.infer<typeof exerciseSchema>,
 ) => {
   "use server";
 
@@ -21,14 +26,20 @@ export const createMiscAction = async (
   if (emailAddresses.length < 1 || !emailAddresses[0]) return;
   const { emailAddress } = emailAddresses[0];
 
-  // create data format function with dayid as argument
+  if (!user) return { error: "error", status: 403, message: "Unothorized" };
 
-  const miscData = (dayId: string) => ({
-    ...formData,
+  // create data format function with dayid as argument
+  const exerciseData = (dayId: string) => ({
+    duration: formData.duration,
+    type: formData.type,
+    intensity: formData.intensity,
+    fasted: formData.fasted,
+    time_of_day: formData.time_of_day,
     day_id: dayId,
   });
+
   // date initializer
-  const { startOfDay, endOfDay } = currentDay(new Date());
+  const { startOfDay, endOfDay } = currentDay(dayjs().toDate());
 
   // day finder/creator
   let day;
@@ -40,8 +51,8 @@ export const createMiscAction = async (
       },
     });
     if (day) {
-      await db.form_misc.create({
-        data: miscData(day.id),
+      await db.exercise.create({
+        data: exerciseData(day.id),
       });
     } else {
       // if day does not exist, create day and exercise
@@ -51,8 +62,8 @@ export const createMiscAction = async (
           user: { connect: { clerk_id: id, email: emailAddress } },
         },
       });
-      await db.form_misc.create({
-        data: miscData(day.id),
+      await db.exercise.create({
+        data: exerciseData(day.id),
       });
     }
   } catch (err) {
@@ -60,11 +71,6 @@ export const createMiscAction = async (
   }
 
   // revalidate
-  revalidateTag("form_misc");
+  revalidateTag("exercise");
   return { message: "success", error: "", status: 202 };
-  // create misc
 };
-
-// edit action
-
-// delete action

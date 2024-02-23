@@ -2,7 +2,7 @@
 
 import type { z } from "zod";
 import type { stressSchema } from "~/components/forms/day/schema";
-import { db } from "../db";
+import { db } from "../../server/db";
 import { currentUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
 import { revalidateTag } from "next/cache";

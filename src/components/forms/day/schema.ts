@@ -4,77 +4,43 @@ import {
   ExerciseType,
   Measurements,
   MentalHealthDescriptors,
+  PhysicalHealthDescriptors,
   StressSymptoms,
   Supplements,
-  TimeOfDay,
 } from "@prisma/client";
 
-export const formSchema = z.object({
-  supplements: z
-    .array(
-      z.object({
-        supplement: z.string(),
-        amount: z.number().optional(),
-        time_of_day: z.number().optional(),
-      }),
-    )
-    .optional(),
-  supplement_name: z.string().optional(),
-  supplement_amount: z.number().optional(),
-  supplement_time_of_day: z.number().optional(),
-  sleep_quality: z.array(z.string()),
-  sleep_rating: z.number(),
-  sleep_duration: z.number().optional(),
-  sleep_wake_time: z.string().optional(),
-  sleep_bed_time: z.string().optional(),
-  exercise_type: z.enum(["cardio", "strength", "flexibility", ""]).optional(),
-  exercise_duration: z.number().optional(),
-  exercise_intensity: z.enum(["low", "medium", "high", ""]).optional(),
-  exercise_time_of_day: z.number().optional(),
-  exercise_fasted: z.boolean().default(false),
-  meditation: z.boolean().default(false),
-  meditation_duration: z.number().optional(),
-  intermittent_fasting: z.boolean().default(false),
-  intermittent_fasting_duration: z.string().optional(),
-  coldshower: z.boolean().default(false),
-  physical_health: z.number().max(10).min(0),
-  physical_health_description: z.array(z.string()).optional(),
-  mental_health: z.number().max(10).min(1),
-  mental_health_description: z.array(z.string()).optional(),
-  energy_level: z.number().max(10).min(1),
-});
+/**
+ * @description the goal is to have a "it is optional until a
+ * field is filled out then it is required" state.
+ * Zod does not have a built in feature for this. I will have to get creative
+ * or change schema libraries. Used Toggles and superRefine
+ */
 
 export const sleepSchema = z.object({
   hours: z.number(),
-  minutes: z.number(),
   quality: z.array(z.string()),
   rating: z.number(),
-  notes: z.string().optional(),
 });
 
 export const supplementSchema = z.object({
-  date: z.string(),
-  name: z.nativeEnum(Supplements).nullable(),
-  // name: z.string().optional(),
-  amount: z.number().nullable(),
-  time_of_day: z.nativeEnum(TimeOfDay).nullable(),
-  time_taken: z.string().nullable(),
+  toggle: z.boolean().default(false),
+  name: z.nativeEnum(Supplements).optional(),
+  amount: z.number().optional(),
+  time_taken: z.string(),
   measurement: z
     .object({
       label: z.string(),
       value: z.nativeEnum(Measurements),
     })
-    .nullable(),
-  supplements: z
-    .array(
-      z.object({
-        supplement: z.nativeEnum(Supplements),
-        amount: z.number(),
-        measurement: z.nativeEnum(Measurements),
-        time_taken: z.string(),
-      }),
-    )
-    .min(1),
+    .optional(),
+  supplements: z.array(
+    z.object({
+      name: z.nativeEnum(Supplements),
+      amount: z.number(),
+      measurement: z.nativeEnum(Measurements),
+      time_taken: z.string(),
+    }),
+  ),
 });
 
 export const stressSchema = z.object({
@@ -85,6 +51,7 @@ export const stressSchema = z.object({
 });
 
 export const exerciseSchema = z.object({
+  toggle: z.boolean().default(false).optional(),
   type: z.nativeEnum(ExerciseType),
   duration: z.number(),
   intensity: z.enum(["low", "medium", "high"]),
@@ -95,14 +62,16 @@ export const exerciseSchema = z.object({
 
 export const healthSchema = z.object({
   physical_health: z.number().max(10).min(0),
-  physical_health_description: z.array(z.string()).max(5).optional(),
+  physical_health_description: z
+    .array(z.nativeEnum(PhysicalHealthDescriptors))
+    .max(5)
+    .optional(),
   mental_health: z.number().max(10).min(1),
   mental_health_description: z
     .array(z.nativeEnum(MentalHealthDescriptors))
     .max(5)
     .optional(),
-  energy_level: z.number().max(10).min(1),
-  notes: z.string().optional(),
+  energy_levels: z.number().max(10).min(1),
 });
 
 export const mealsSchema = z.object({
@@ -127,3 +96,43 @@ export const miscSchema = z.object({
   intermittent_fasting: z.boolean().default(false),
   cold_shower: z.boolean().default(false),
 });
+
+export const daySchema = z.object({
+  date: z.string(),
+  sleep: sleepSchema,
+  stress: stressSchema,
+  health: healthSchema,
+  exercise: exerciseSchema.optional().superRefine((data, ctx) => {
+    if (data?.toggle) {
+      // make the supplements required
+      if (
+        !data.duration &&
+        !data.intensity &&
+        !data.time_of_day &&
+        !data.type
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Supplements are required",
+          path: ["supplements"],
+        });
+      }
+    } else {
+    }
+  }),
+  supplements: supplementSchema.optional().superRefine((data, ctx) => {
+    if (data?.toggle) {
+      // make the supplements required
+      if (data.supplements && data.supplements?.length < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Supplements are required",
+          path: ["supplements"],
+        });
+      }
+    }
+  }),
+  misc: miscSchema,
+});
+
+export const daySchemaOptional = z.object({}).merge(exerciseSchema);

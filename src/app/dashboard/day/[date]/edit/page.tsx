@@ -1,9 +1,5 @@
-import type { Params } from "next/dist/shared/lib/router/utils/route-matcher";
-import { DayForms } from "~/components/day";
-import { db } from "~/server/db";
-
-const Page = ({ id }: { id: Params }) => {
-  console.log(id);
+const Page = ({ params }: { params: { date: string } }) => {
+  console.log(params);
   // return <DayForms />;
   return <div>Day</div>;
 };

@@ -48,6 +48,7 @@ export function DatePicker({ date }: { date: Date | string }) {
         <Calendar
           mode="single"
           selected={day}
+          // @ts-expect-error - onDateChange is not the best option for state change imo
           onSelect={onDateChange}
           initialFocus
         />

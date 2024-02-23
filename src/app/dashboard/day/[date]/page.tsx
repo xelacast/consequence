@@ -2,20 +2,12 @@ import { readDayData } from "~/lib/data/day";
 import { DatePicker } from "../components/datePicker";
 import type { $Enums } from "@prisma/client";
 import dayjs from "dayjs";
-import { CreateDayButton } from "./components/handlers";
+import { CreateDayButton } from "../components/handlers";
 
 export default async function Page({ params }: { params: { date: string } }) {
   const { date } = params;
-  const {
-    supplements,
-    day,
-    exercise,
-    error,
-    form_misc,
-    health,
-    sleep,
-    stress,
-  } = await readDayData(date);
+  const { supplements, day, exercise, form_misc, health, sleep, stress } =
+    await readDayData(date);
   return (
     <div className="container">
       <DatePicker date={date} />

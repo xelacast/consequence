@@ -1,19 +1,14 @@
 "use server";
 
-import type { exerciseSchema } from "~/components/forms/day/schema";
-import { db } from "../db";
-import type { z } from "zod";
 import { currentUser } from "@clerk/nextjs";
-import { currentDay } from "../../lib/dates";
 import { revalidateTag } from "next/cache";
-import dayjs from "../../lib/dates";
+import type { z } from "zod";
+import type { miscSchema } from "~/components/forms/day/schema";
+import { currentDay } from "~/lib/dates";
+import { db } from "../../server/db";
 
-/**
- ** Be careful when you use this to let user back track data. We dont want a date of today for being used for a date of yesterday or prior dates
- */
-
-export const createExerciseAction = async (
-  formData: z.infer<typeof exerciseSchema>,
+export const createMiscAction = async (
+  formData: z.infer<typeof miscSchema>,
 ) => {
   "use server";
 
@@ -26,20 +21,14 @@ export const createExerciseAction = async (
   if (emailAddresses.length < 1 || !emailAddresses[0]) return;
   const { emailAddress } = emailAddresses[0];
 
-  if (!user) return { error: "error", status: 403, message: "Unothorized" };
-
   // create data format function with dayid as argument
-  const exerciseData = (dayId: string) => ({
-    duration: formData.duration,
-    type: formData.type,
-    intensity: formData.intensity,
-    fasted: formData.fasted,
-    time_of_day: formData.time_of_day,
+
+  const miscData = (dayId: string) => ({
+    ...formData,
     day_id: dayId,
   });
-
   // date initializer
-  const { startOfDay, endOfDay } = currentDay(dayjs().toDate());
+  const { startOfDay, endOfDay } = currentDay(new Date());
 
   // day finder/creator
   let day;
@@ -51,8 +40,8 @@ export const createExerciseAction = async (
       },
     });
     if (day) {
-      await db.exercise.create({
-        data: exerciseData(day.id),
+      await db.form_misc.create({
+        data: miscData(day.id),
       });
     } else {
       // if day does not exist, create day and exercise
@@ -62,8 +51,8 @@ export const createExerciseAction = async (
           user: { connect: { clerk_id: id, email: emailAddress } },
         },
       });
-      await db.exercise.create({
-        data: exerciseData(day.id),
+      await db.form_misc.create({
+        data: miscData(day.id),
       });
     }
   } catch (err) {
@@ -71,6 +60,11 @@ export const createExerciseAction = async (
   }
 
   // revalidate
-  revalidateTag("exercise");
+  revalidateTag("form_misc");
   return { message: "success", error: "", status: 202 };
+  // create misc
 };
+
+// edit action
+
+// delete action

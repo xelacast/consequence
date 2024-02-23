@@ -1,56 +1,43 @@
-import { type UseFormReturn, useForm } from "react-hook-form";
+import { type UseFormReturn } from "react-hook-form";
 import type { z } from "zod";
 import { FormContainer } from "~/components/ui/formcontainer";
 import { Checkbox } from "~/components/ui/checkbox";
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "~/components/ui/button";
-import { createMiscAction } from "~/server/actions/miscAction";
-import { miscSchema } from "./schema";
+import { type daySchema } from "./schema";
 
-export const MiscForm = () => {
-  const form = useForm<z.infer<typeof miscSchema>>({
-    resolver: zodResolver(miscSchema),
-  });
-
-  const onSubmit = async (values: z.infer<typeof miscSchema>) => {
-    await createMiscAction(values);
-  };
-
+export const MiscForm = ({
+  form,
+}: {
+  form: UseFormReturn<z.infer<typeof daySchema>>;
+}) => {
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <FormContainer>
-          <>
-            <h5>More Forms</h5>
-            <MeditationForm form={form} />
-            <IntermittentFastingForm form={form} />
-            <ColdShowerForm form={form} />
-            <Button type="submit">Submit</Button>
-          </>
-        </FormContainer>
-      </form>
-    </Form>
+    <FormContainer>
+      <>
+        <h5>More Forms</h5>
+        <MeditationForm form={form} />
+        <IntermittentFastingForm form={form} />
+        <ColdShowerForm form={form} />
+      </>
+    </FormContainer>
   );
 };
 
 export const MeditationForm = ({
   form,
 }: {
-  form: UseFormReturn<z.infer<typeof miscSchema>>;
+  form: UseFormReturn<z.infer<typeof daySchema>>;
 }) => {
   return (
     <div className="flex gap-4 align-top">
       <FormField
         control={form.control}
-        name="meditation"
+        name="misc.meditation"
         render={({ field }) => (
           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
             <FormLabel>Meditation</FormLabel>
@@ -71,13 +58,13 @@ export const MeditationForm = ({
 export const IntermittentFastingForm = ({
   form,
 }: {
-  form: UseFormReturn<z.infer<typeof miscSchema>>;
+  form: UseFormReturn<z.infer<typeof daySchema>>;
 }) => {
   return (
     <div className="flex gap-4 align-top">
       <FormField
         control={form.control}
-        name="intermittent_fasting"
+        name="misc.intermittent_fasting"
         render={({ field }) => (
           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
             <FormLabel>Intermittent Fasting</FormLabel>
@@ -98,13 +85,13 @@ export const IntermittentFastingForm = ({
 export const ColdShowerForm = ({
   form,
 }: {
-  form: UseFormReturn<z.infer<typeof miscSchema>>;
+  form: UseFormReturn<z.infer<typeof daySchema>>;
 }) => {
   return (
     <div className="flex gap-4 align-top">
       <FormField
         control={form.control}
-        name="cold_shower"
+        name="misc.cold_shower"
         render={({ field }) => (
           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
             <FormLabel>Cold Shower</FormLabel>

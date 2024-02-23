@@ -1,6 +1,6 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 
 export const CreateDayButton = ({
@@ -10,11 +10,12 @@ export const CreateDayButton = ({
   dayId: string | undefined;
   date: string;
 }) => {
+  const router = useRouter();
   const handleCreate = () => {
-    redirect(`/dashboard/day/${date}/create`);
+    router.push(`/dashboard/day/${date}/create`);
   };
   const handleEdit = () => {
-    redirect(`/dashboard/day/${dayId}/edit`);
+    router.push(`/dashboard/day/${date}/edit`);
   };
   // edit feature
   if (dayId) {
@@ -24,7 +25,7 @@ export const CreateDayButton = ({
       </div>
     );
   }
-  // creat feature
+  // create feature
   return (
     <div>
       <Button onClick={handleCreate}>Create Day</Button>

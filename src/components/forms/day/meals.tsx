@@ -1,9 +1,8 @@
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import { exerciseSchema, mealsSchema } from "../day/schema";
+import { mealsSchema } from "../day/schema";
 import { ExerciseType } from "@prisma/client";
 import { FormContainer } from "~/components/ui/formcontainer";
-import { Checkbox } from "~/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -14,12 +13,10 @@ import {
 } from "~/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Select from "react-select";
-import { Button } from "~/components/ui/button";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import dayjs, { datePickerFormater } from "~/lib/dates";
-import { createExerciseAction } from "~/server/actions/exerciseAction";
 
 const exerciseTypeOptions = Object.values(ExerciseType).map((type) => {
   return {
@@ -27,21 +24,6 @@ const exerciseTypeOptions = Object.values(ExerciseType).map((type) => {
     value: type.toLowerCase(),
   };
 }) as Options[];
-
-const exerciseDurationOptions = [
-  { label: "15 mins", value: "15" },
-  { label: "30 Mins", value: "30" },
-  { label: "45 Mins", value: "45" },
-  { label: "1 Hour", value: "60" },
-  { label: "1 Hour 15 Mins", value: "75" },
-  { label: "1 Hour 30 Mins", value: "90" },
-] as Options[];
-
-const exerciseIntensityOptions = [
-  { label: "Low", value: "low" },
-  { label: "Medium", value: "medium" },
-  { label: "High", value: "high" },
-] as Options[];
 
 type Options = {
   label: string;
@@ -52,11 +34,7 @@ export const MealsForm = () => {
   const form = useForm<z.infer<typeof mealsSchema>>({
     resolver: zodResolver(mealsSchema),
     defaultValues: {
-      // exercise_type: "",
-      // duration: 0,
-      // intensity: "",
       time_of_day: dayjs().hour() + ":" + dayjs().minute(),
-      // fasted: false,
     },
   });
 
@@ -102,12 +80,6 @@ export const MealsForm = () => {
                 <FormItem>
                   <FormLabel>Time of Day</FormLabel>
                   <FormControl>
-                    {/* <Input
-                      {...field}
-                      placeholder="Time of Day"
-                      value={field.value || ""}
-                      onChange={() => field.onChange(+field.value)}
-                    /> */}
                     <TimePicker
                       {...field}
                       onChange={(e) => field.onChange(e)}
