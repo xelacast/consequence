@@ -1,8 +1,9 @@
 import { auth, redirectToSignIn } from "@clerk/nextjs";
 import { db } from "~/server/db";
 import { currentDay } from "~/lib/dates";
+import { redirect } from "next/navigation";
 
-export async function readDayData(date: string) {
+export async function readDayData(date: string, editing = false) {
   const { userId }: { userId: string | null } = auth();
 
   if (!userId) {
@@ -21,7 +22,13 @@ export async function readDayData(date: string) {
         date: true,
         id: true,
         sleep: {
-          select: { id: true, hours: true, quality: true, notes: true },
+          select: {
+            id: true,
+            hours: true,
+            quality: true,
+            notes: true,
+            rating: true,
+          },
         },
         exercise: {
           select: {
@@ -52,16 +59,24 @@ export async function readDayData(date: string) {
             energy_levels: true,
             mental_health_description: true,
             physical_health_description: true,
-            weight: true,
-            date: true,
+            // weight: true,
+            // date: true,
           },
         },
         form_misc: true,
-        stress: true,
+        stress: {
+          select: {
+            id: true,
+            rating: true,
+            time_of_day: true,
+            symptoms: true,
+            notes: true,
+          },
+        },
       },
     });
     return {
-      day: { id: data.id, date: data.date },
+      day: { id: data.id, date: date },
       sleep: data.sleep,
       exercise: data.exercise,
       supplements: data.supplements,
@@ -70,6 +85,18 @@ export async function readDayData(date: string) {
       stress: data.stress,
     };
   } catch (error) {
-    return { error: "Day not found" };
+    // read data for editing purposes. If no day then redirect to a create page. This creates a dependency but is it cutting corners?
+    if (editing) {
+      redirect(`/dashboard/day/${date}`);
+    }
+    return {
+      day: { id: "", date: date },
+      sleep: undefined,
+      exercise: [],
+      supplements: [],
+      health: [],
+      form_misc: undefined,
+      stress: [],
+    };
   }
 }

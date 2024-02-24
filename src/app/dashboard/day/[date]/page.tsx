@@ -8,6 +8,10 @@ export default async function Page({ params }: { params: { date: string } }) {
   const { date } = params;
   const { supplements, day, exercise, form_misc, health, sleep, stress } =
     await readDayData(date);
+  // do I parse the data?
+  // const pars = updateDaySchema.parse(day);
+  // console.log(pars);
+
   return (
     <div className="container">
       <DatePicker date={date} />
@@ -35,7 +39,7 @@ const FormMiscContainer = ({ form_misc }: { form_misc: FormMisc }) => {
   );
 };
 
-type FormMisc =
+export type FormMisc =
   | {
       id: string;
       meditation: boolean;
@@ -46,18 +50,13 @@ type FormMisc =
   | null
   | undefined;
 
-type Stress =
-  | {
-      id: string;
-      date: Date;
-      rating: number;
-      time_of_day: Date;
-      stressors: string | null;
-      symptoms: $Enums.StressSymptoms[];
-      notes: string | null;
-      day_id: string;
-    }[]
-  | undefined;
+export type Stress = {
+  id: string;
+  rating: number;
+  time_of_day: Date;
+  symptoms: $Enums.StressSymptoms[];
+  notes: string | null;
+}[];
 
 const StressContainer = ({ stress }: { stress: Stress }) => {
   return (
@@ -65,13 +64,13 @@ const StressContainer = ({ stress }: { stress: Stress }) => {
       <h2>Stress</h2>
       {stress?.map((s) => (
         <div key={s.id}>
-          <div>Date: {dayjs(s.date).format("YYYY-MM-DDTHH:mm:ssZ[Z]")}</div>
+          {/* <div>Date: {dayjs(s.date).format("YYYY-MM-DDTHH:mm:ssZ[Z]")}</div> */}
           <div>Rating: {s.rating}</div>
           <div>
             Time of Day:{" "}
             {dayjs(s.time_of_day).format("YYYY-MM-DDTHH:mm:ssZ[Z]")}
           </div>
-          <div>Stressors: {s.stressors ?? "N/A"}</div>
+          {/* <div>Stressors: {s.stressors ?? "N/A"}</div> */}
           <div>
             Symptoms:{" "}
             {s.symptoms.map((sym) => <span key={sym}>{sym}</span>) ?? "N/A"}
@@ -83,19 +82,15 @@ const StressContainer = ({ stress }: { stress: Stress }) => {
   );
 };
 
-type Health =
-  | {
-      id: string;
-      notes: string | null;
-      weight: number | null;
-      energy_levels: number;
-      physical_health: number;
-      mental_health: number;
-      physical_health_description: $Enums.PhysicalHealthDescriptors[];
-      mental_health_description: $Enums.MentalHealthDescriptors[];
-      date: Date;
-    }[]
-  | undefined;
+export type Health = {
+  id: string;
+  notes: string | null;
+  energy_levels: number;
+  physical_health: number;
+  mental_health: number;
+  physical_health_description: $Enums.PhysicalHealthDescriptors[];
+  mental_health_description: $Enums.MentalHealthDescriptors[];
+}[];
 
 const HealthContainer = ({ health }: { health: Health }) => {
   return (
@@ -104,7 +99,7 @@ const HealthContainer = ({ health }: { health: Health }) => {
       {health?.map((h) => (
         <div key={h.id}>
           <div>Notes: {h?.notes ?? "N/A"}</div>
-          <div>Weight: {h?.weight ?? "N/A"}</div>
+          {/* <div>Weight: {h?.weight ?? "N/A"}</div> */}
           <div>Energy Levels: {h?.energy_levels ?? "N/A"}</div>
           <div>Physical Health: {h?.physical_health ?? "N/A"}</div>
           <div>Mental Health: {h?.mental_health ?? "N/A"}</div>
@@ -126,7 +121,7 @@ const HealthContainer = ({ health }: { health: Health }) => {
   );
 };
 
-type Sleep =
+export type Sleep =
   | {
       id: string;
       hours: number;
@@ -149,19 +144,16 @@ const SleepContainer = ({ data }: { data: Sleep }) => {
   );
 };
 
-type Exercise = {
+export type Exercise = {
   id: string;
   type: $Enums.ExerciseType;
   duration: number;
   time_of_day: Date;
   intensity: string;
   fasted: boolean;
-};
-const ExerciseContainer = ({
-  exercise,
-}: {
-  exercise: Exercise[] | undefined;
-}) => {
+}[];
+
+const ExerciseContainer = ({ exercise }: { exercise: Exercise }) => {
   return (
     <section className="rounded-lg border p-2">
       <h3>Exercise</h3>
@@ -181,7 +173,7 @@ const ExerciseContainer = ({
   );
 };
 
-type Supps = {
+export type Supps = {
   id: string;
   // date: Date;
   name: $Enums.Supplements;
@@ -190,13 +182,9 @@ type Supps = {
   time_taken: Date | null;
   measurement: $Enums.Measurements;
   // day_id: string;
-};
+}[];
 
-const SupplementContainer = ({
-  supplements,
-}: {
-  supplements: Supps[] | undefined;
-}) => {
+const SupplementContainer = ({ supplements }: { supplements: Supps }) => {
   return (
     <section className="rounded-lg border p-2">
       <h3>Supplements</h3>
