@@ -148,9 +148,18 @@ export const updateSleepSchema = z.object({
 
 export const updateSupplementSchema = z.object({
   toggle: z.boolean().default(false), // going to cause an issue
+  name: z.nativeEnum(Supplements).optional(),
+  amount: z.number().optional(),
+  measurement: z
+    .object({
+      label: z.string(),
+      value: z.nativeEnum(Measurements),
+    })
+    .optional(),
+  time_taken: z.string().optional(),
   supplements: z.array(
     z.object({
-      id: z.string(),
+      // id: z.string(),
       name: z.nativeEnum(Supplements),
       amount: z.number(),
       measurement: z.nativeEnum(Measurements),
@@ -240,7 +249,7 @@ export const updateDaySchema = z.object({
       }
     }
   }),
-  supplements: updateSupplementSchema.optional().superRefine((data, ctx) => {
+  supplements: updateSupplementSchema.superRefine((data, ctx) => {
     if (data?.toggle) {
       // make the supplements required
       if (data.supplements && data.supplements?.length < 1) {
