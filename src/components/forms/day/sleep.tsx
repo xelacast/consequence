@@ -1,6 +1,6 @@
 import { type UseFormReturn } from "react-hook-form";
 import type { z } from "zod";
-import { type daySchema } from "../day/schema";
+import type { daySchema } from "../day/schema";
 import { Input } from "~/components/ui/input";
 import { FormContainer } from "~/components/ui/formcontainer";
 import {
@@ -41,7 +41,7 @@ export const SleepFormV2 = ({
               <FormControl>
                 <Input
                   {...field}
-                  value={field.value || ""}
+                  value={field.value ?? ""}
                   placeholder="Sleep Rating"
                   onChange={(e) => field.onChange(+e.target.value)}
                 />
@@ -58,6 +58,10 @@ export const SleepFormV2 = ({
               <FormLabel>Quality</FormLabel>
               <FormControl>
                 <Select
+                  defaultValue={field.value?.map((c) => ({
+                    value: c,
+                    label: c.substring(0, 1).toUpperCase() + c.substring(1),
+                  }))}
                   closeMenuOnSelect={false}
                   options={options}
                   onChange={(e) =>
@@ -80,7 +84,7 @@ export const SleepFormV2 = ({
               <FormControl>
                 <Input
                   {...field}
-                  value={field.value || ""}
+                  value={field.value ?? ""}
                   placeholder="Sleep Duration (hrs)"
                   pattern="[0,9]"
                   type="number"

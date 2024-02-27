@@ -1,24 +1,25 @@
-import { readDayData } from "~/lib/data/day";
+import { readDayDataForEdit } from "~/lib/data/day";
 import UpdateDay from "../../components/updateDay";
 
 const Page = async ({ params }: { params: { date: string } }) => {
   // load data from day and render the form with the data
   const { date } = params;
-  const { supplements, day, exercise, form_misc, health, sleep, stress } =
-    await readDayData(date, true);
-
-  const { id } = day; // day will never be undefined with editing = true. ts is not picking that up.
+  const { supplements, id, exercise, form_misc, health, sleep, stress } =
+    await readDayDataForEdit(date);
 
   // can I resuse the day form and make default values but send it to an update???
   // how can I detect which fields are being updated? and then trigger only those fields?
+  // ? Should I parse the data with the daySchema?
 
-  // first approach I am going to use one big form
-
+  // TODO: fix error below
   return (
     <UpdateDay
+      // day={day}
+      date={date}
       id={id}
       supplements={supplements}
-      exercise={exercise}
+      // @ts-expect-error look below
+      exercise={exercise} // errors in config string != "low" | "medium" | "high" schema is set this way but the dat coming from the zod schema is just a string. Alter this in the data pull
       form_misc={form_misc}
       health={health}
       sleep={sleep}

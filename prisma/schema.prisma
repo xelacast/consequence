@@ -36,7 +36,7 @@ model user {
 model day {
   id              String           @id @default(uuid())
   date            DateTime         @default(now())
-  user            user             @relation(fields: [user_id], references: [id])
+  user            user             @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id         String
   sleep           sleep?
   supplements     supplements[]
@@ -62,7 +62,7 @@ model sleep {
   wake_time  DateTime?
   sleep_time DateTime?
   notes String?
-  day    day    @relation(fields: [day_id], references: [id])
+  day    day    @relation(fields: [day_id], references: [id], onDelete: Cascade)
   day_id String @unique
 }
 
@@ -75,7 +75,7 @@ model supplements {
   time_taken        DateTime?
   measurement       Measurements @default(mg)
 
-  day    day    @relation(fields: [day_id], references: [id])
+  day    day    @relation(fields: [day_id], references: [id], onDelete: Cascade)
   day_id String
 }
 
@@ -87,7 +87,7 @@ model stress {
   stressors   String?
   symptoms StressSymptoms[]
   notes String?
-  day         day      @relation(fields: [day_id], references: [id])
+  day         day      @relation(fields: [day_id], references: [id], onDelete: Cascade)
   day_id      String
 }
 
@@ -101,7 +101,7 @@ model exercise {
   fasted      Boolean      @default(false)
   notes String?
 
-  day    day    @relation(fields: [day_id], references: [id])
+  day    day    @relation(fields: [day_id], references: [id], onDelete: Cascade)
   day_id String
 
   exercises exercises[]
@@ -112,7 +112,7 @@ model exercises {
   name        String
   sets        Int
   reps        Int
-  exercise    exercise @relation(fields: [exercise_id], references: [id])
+  exercise    exercise @relation(fields: [exercise_id], references: [id], onDelete: Cascade)
   exercise_id String
 }
 
@@ -124,7 +124,7 @@ model meals {
   notes String?
   healthy     Boolean  @default(true)
   calorie_intake Int
-  day         day      @relation(fields: [day_id], references: [id])
+  day         day      @relation(fields: [day_id], references: [id], onDelete: Cascade)
   macros macros?
   day_id      String
 }
@@ -139,7 +139,7 @@ model macros {
   sugar       Int?
   sodium      Int?
   cholesterol Int?
-  meals meals     @relation(fields: [meals_id], references: [id])
+  meals meals     @relation(fields: [meals_id], references: [id], onDelete: Cascade)
   meals_id       String @unique
 }
 
@@ -148,7 +148,7 @@ model form_misc {
   meditation  Boolean  @default(false)
   intermittent_fasting Boolean  @default(false)
   cold_shower        Boolean  @default(false)
-  day          day      @relation(fields: [day_id], references: [id])
+  day          day      @relation(fields: [day_id], references: [id], onDelete: Cascade)
   day_id       String @unique
 
 }
@@ -160,7 +160,7 @@ model form_misc {
 //   duration Int
 //   time     DateTime
 
-//   day    day    @relation(fields: [day_id], references: [id])
+//   day    day    @relation(fields: [day_id], references: [id], onDelete: Cascade)
 //   day_id String
 // }
 
@@ -173,7 +173,7 @@ model form_misc {
 //   duration     Int?
 //   fasted       Boolean  @default(false)
 
-//   day    day    @relation(fields: [day_id], references: [id])
+//   day    day    @relation(fields: [day_id], references: [id], onDelete: Cascade)
 //   day_id String @unique
 
 // }
@@ -188,7 +188,7 @@ model nightly_routine {
   affirmations Boolean  @default(false)
   journaling   Boolean  @default(false)
 
-  day    day    @relation(fields: [day_id], references: [id])
+  day    day    @relation(fields: [day_id], references: [id], onDelete: Cascade)
   day_id String @unique
 }
 
@@ -216,7 +216,7 @@ model health {
   mental_health_description   MentalHealthDescriptors[]
   notes String?
 
-  day    day    @relation(fields: [day_id], references: [id])
+  day    day    @relation(fields: [day_id], references: [id], onDelete: Cascade)
   day_id String
 }
 

@@ -9,7 +9,7 @@ type ReducerTypes = "ADD" | "REMOVE";
 
 export type Reducer = Dispatch<{ type: ReducerTypes; node: Node }>;
 
-type Context = {
+export type Context = {
   node: Node;
   key: string;
 }[];
@@ -17,11 +17,25 @@ type Context = {
 const DayFormContext = createContext<Context | null>(null);
 const DayFormDispatchContext = createContext<Reducer>(() => null);
 
-const initialState: Context = [];
+/**
+ *
+ * @param children: React.ReactNode
+ * @param initialState: Context | undefined
+ * this is used when the form is in edit mode and renders forms to the provider based on the data given to the create/edit forms
+ * @returns form context provider
+ *
+ */
 
-export const DayProvider = ({ children }: { children: React.ReactNode }) => {
+export const DayProvider = ({
+  children,
+  initialState,
+}: {
+  children: React.ReactNode;
+  initialState?: Context;
+}) => {
+  if (!initialState) initialState = [];
+
   const [forms, dispatch] = useReducer(dayFormReducer, initialState);
-
   return (
     <DayFormContext.Provider value={forms}>
       <DayFormDispatchContext.Provider value={dispatch}>

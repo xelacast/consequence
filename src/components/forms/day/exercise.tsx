@@ -1,7 +1,7 @@
 import { type UseFormReturn } from "react-hook-form";
 import type { z } from "zod";
 import { type daySchema } from "../day/schema";
-import { ExerciseType } from "@prisma/client";
+import { type $Enums, ExerciseType } from "@prisma/client";
 import { FormContainer } from "~/components/ui/formcontainer";
 import { Checkbox } from "~/components/ui/checkbox";
 import {
@@ -15,33 +15,32 @@ import Select from "react-select";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
+import { datePickerFormater } from "~/lib/dates";
 
 const exerciseTypeOptions = Object.values(ExerciseType).map((type) => {
   return {
     label: type.charAt(0).toUpperCase() + type.substring(1),
     value: type.toLowerCase(),
   };
-}) as Options[];
+}) as { label: string; value: $Enums.ExerciseType }[];
 
 const exerciseDurationOptions = [
-  { label: "15 mins", value: "15" },
-  { label: "30 Mins", value: "30" },
-  { label: "45 Mins", value: "45" },
-  { label: "1 Hour", value: "60" },
-  { label: "1 Hour 15 Mins", value: "75" },
-  { label: "1 Hour 30 Mins", value: "90" },
-] as Options[];
+  { label: "15 mins", value: 15 },
+  { label: "30 Mins", value: 30 },
+  { label: "45 Mins", value: 45 },
+  { label: "1 Hour", value: 60 },
+  { label: "1 Hour 15 Mins", value: 75 },
+  { label: "1 Hour 30 Mins", value: 90 },
+] as { label: string; value: number }[];
 
 const exerciseIntensityOptions = [
   { label: "Low", value: "low" },
   { label: "Medium", value: "medium" },
   { label: "High", value: "high" },
-] as Options[];
-
-type Options = {
+] as {
   label: string;
-  value: string;
-};
+  value: "low" | "medium" | "high";
+}[];
 
 export const ExerciseFormV2 = ({
   form,
@@ -60,6 +59,16 @@ export const ExerciseFormV2 = ({
               <FormLabel>Type</FormLabel>
               <FormControl>
                 <Select
+                  defaultValue={
+                    field.value
+                      ? {
+                          label:
+                            field.value.substring(0, 1).toUpperCase() +
+                            field.value.substring(1),
+                          value: field.value,
+                        }
+                      : undefined
+                  }
                   options={exerciseTypeOptions}
                   // @ts-expect-error This is a bug in the react-select types
                   onChange={(e) => field.onChange(e.value)}
@@ -78,6 +87,14 @@ export const ExerciseFormV2 = ({
               <FormLabel>Duration</FormLabel>
               <FormControl>
                 <Select
+                  defaultValue={
+                    field.value
+                      ? {
+                          label: field.value.toString() + " Mins",
+                          value: field.value,
+                        }
+                      : undefined
+                  }
                   // @ts-expect-error This is a bug in the react-select types
                   onChange={(e) => field.onChange(+e.value)}
                   options={exerciseDurationOptions}
@@ -96,9 +113,22 @@ export const ExerciseFormV2 = ({
               <FormLabel>Intensity</FormLabel>
               <FormControl>
                 <Select
+                  defaultValue={
+                    field.value
+                      ? {
+                          label:
+                            field.value.substring(0, 1).toUpperCase() +
+                            field.value.substring(1),
+                          value: field.value,
+                        }
+                      : undefined
+                  }
                   options={exerciseIntensityOptions}
-                  // @ts-expect-error This is a bug in the react-select types
-                  onChange={(e) => field.onChange(e.value)}
+                  // @ts-expect-error Not sure how to get around this atm
+                  onChange={(e: {
+                    label: string;
+                    value: "low" | "medium" | "high";
+                  }) => field.onChange(e.value)}
                   placeholder="Exercise Intensity"
                 />
               </FormControl>
@@ -108,18 +138,22 @@ export const ExerciseFormV2 = ({
         />
         <FormField
           control={form.control}
-          name="exercise.time_of_day"
+          name="exercise.time_of_day_string"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Time of Day</FormLabel>
               <FormControl>
-                {/* <Input
-                      {...field}
-                      placeholder="Time of Day"
-                      value={field.value || ""}
-                      onChange={() => field.onChange(+field.value)}
-                    /> */}
-                <TimePicker {...field} onChange={(e) => field.onChange(e)} />
+                <TimePicker
+                  {...field}
+                  onChange={(e: string | null) => {
+                    const time = datePickerFormater({
+                      time: e,
+                      selectedDate: form.getValues("date"),
+                    });
+                    form.setValue("exercise.time_of_day", time);
+                    field.onChange(e);
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

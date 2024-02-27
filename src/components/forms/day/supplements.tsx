@@ -16,6 +16,8 @@ import {
 import Select from "react-select";
 import { Measurements, Supplements } from "@prisma/client";
 import TimePicker from "react-time-picker";
+import dayjs from "dayjs";
+import { datePickerFormater } from "~/lib/dates";
 
 const supplementOptions = Object.values(Supplements).map((supplement) => {
   return { label: supplement, value: supplement.toLowerCase() };
@@ -43,21 +45,27 @@ export const SupplementFormV2 = ({
     const {
       name,
       amount,
-      time_taken,
+      time_taken_string,
       measurement: measure,
     } = supplements
       ? supplements
       : {
           name: undefined,
           amount: undefined,
-          time_taken: "",
+          time_taken_string: "",
           measurement: { label: "mg", value: "mg" },
         };
 
     const measurement = measure?.value as Measurements;
-    if (!name || !amount || !time_taken || !measurement) {
+    if (!name || !amount || !time_taken_string || !measurement) {
       return;
     }
+    const date = form.getValues("date");
+    const time_taken = datePickerFormater({
+      time: time_taken_string,
+      selectedDate: date,
+    });
+
     append({
       name,
       amount,
@@ -151,12 +159,17 @@ export const SupplementFormV2 = ({
         </div>
         <FormField
           control={form.control}
-          name="supplements.time_taken"
+          name="supplements.time_taken_string"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Time Taken</FormLabel>
               <FormControl>
-                <TimePicker {...field} onChange={(e) => field.onChange(e)} />
+                <TimePicker
+                  {...field}
+                  onChange={(e: string | null) => {
+                    field.onChange(e);
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -173,7 +186,11 @@ export const SupplementFormV2 = ({
                 {field.amount}
                 {field.measurement}
               </span>
-              <span>{field.time_taken}</span>
+              <span>
+                {typeof field.time_taken == "object"
+                  ? dayjs(field.time_taken).toString()
+                  : field.time_taken}
+              </span>
               <Button type="button" onClick={() => remove(index)}>
                 Remove
               </Button>

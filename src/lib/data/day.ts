@@ -3,7 +3,10 @@ import { db } from "~/server/db";
 import { currentDay } from "~/lib/dates";
 import { redirect } from "next/navigation";
 
-export async function readDayData(date: string, editing = false) {
+// TODO: Fix relationships and how data is represeneted
+// * must fix the create actions and edit actions
+
+export async function readDayData(date: string) {
   const { userId }: { userId: string | null } = auth();
 
   if (!userId) {
@@ -75,28 +78,122 @@ export async function readDayData(date: string, editing = false) {
         },
       },
     });
+
     return {
-      day: { id: data.id, date: date },
+      id: data.id,
+      date: data.date,
       sleep: data.sleep,
       exercise: data.exercise,
       supplements: data.supplements,
+      // quick fix for health being a many to many relationship
       health: data.health,
-      form_misc: data.form_misc,
       stress: data.stress,
+      form_misc: data.form_misc,
     };
   } catch (error) {
     // read data for editing purposes. If no day then redirect to a create page. This creates a dependency but is it cutting corners?
-    if (editing) {
-      redirect(`/dashboard/day/${date}`);
-    }
     return {
-      day: { id: "", date: date },
+      id: undefined,
+      date: date,
       sleep: undefined,
       exercise: [],
       supplements: [],
-      health: [],
+      health: undefined,
       form_misc: undefined,
-      stress: [],
+      stress: undefined,
     };
   }
 }
+
+export const readDayDataForEdit = async (date: string) => {
+  const { userId }: { userId: string | null } = auth();
+
+  if (!userId) {
+    redirectToSignIn();
+  }
+
+  const { startOfDay, endOfDay } = currentDay(date);
+
+  try {
+    const data = await db.day.findFirstOrThrow({
+      where: {
+        user: { clerk_id: userId },
+        date: { gte: startOfDay, lt: endOfDay },
+      },
+      select: {
+        date: true,
+        id: true,
+        sleep: {
+          select: {
+            id: true,
+            hours: true,
+            quality: true,
+            notes: true,
+            rating: true,
+          },
+        },
+        exercise: {
+          select: {
+            id: true,
+            type: true,
+            duration: true,
+            time_of_day: true,
+            intensity: true,
+            fasted: true,
+          },
+        },
+        supplements: {
+          select: {
+            id: true,
+            name: true,
+            amount: true,
+            // time_of_day_taken: true,
+            time_taken: true,
+            measurement: true,
+          },
+        },
+        health: {
+          select: {
+            id: true,
+            notes: true,
+            mental_health: true,
+            physical_health: true,
+            energy_levels: true,
+            mental_health_description: true,
+            physical_health_description: true,
+            // weight: true,
+            // date: true,
+          },
+        },
+        form_misc: true,
+        stress: {
+          select: {
+            id: true,
+            rating: true,
+            time_of_day: true,
+            symptoms: true,
+            notes: true,
+          },
+        },
+      },
+    });
+
+    /**
+     * in order to have an editable form Health, Sleep, and Stress must be present. This is a quick fix for now
+     * */
+    return {
+      id: data.id,
+      date: data.date,
+      sleep: data.sleep!,
+      exercise: data.exercise,
+      supplements: data.supplements,
+      // quick fix for health and stress being a many to many relationship
+      health: data.health[0]!,
+      stress: data.stress[0]!,
+      form_misc: data.form_misc!,
+    };
+  } catch (error) {
+    // read data for editing purposes. If no day then redirect to a create page. This creates a dependency but is it cutting corners?
+    redirect(`/dashboard/day/${date}`);
+  }
+};

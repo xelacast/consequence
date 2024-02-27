@@ -16,7 +16,7 @@ import Select from "react-select";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
-import dayjs, { datePickerFormater } from "~/lib/dates";
+import dayjs from "~/lib/dates";
 
 const exerciseTypeOptions = Object.values(ExerciseType).map((type) => {
   return {
@@ -41,10 +41,10 @@ export const MealsForm = () => {
   const onSubmit = async (values: z.infer<typeof mealsSchema>) => {
     // create exercise action
     // format the time before you send it to the server
+    console.log(values);
+    // const date = datePickerFormater({ time: values.time_of_day });
 
-    const date = datePickerFormater({ time: values.time_of_day });
-
-    values.time_of_day = date; // correctly formated isostring date
+    // values.time_of_day = date; // correctly formated isostring date
     // await createExerciseAction(values);
   };
 

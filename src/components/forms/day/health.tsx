@@ -13,12 +13,18 @@ import {
 
 import Select from "react-select";
 import {
+  type $Enums,
   MentalHealthDescriptors,
   PhysicalHealthDescriptors,
 } from "@prisma/client";
 
-interface Option {
-  value: string;
+interface MentalHealthOption {
+  value: $Enums.MentalHealthDescriptors;
+  label: string;
+}
+
+interface PhysicalHealthOption {
+  value: $Enums.PhysicalHealthDescriptors;
   label: string;
 }
 
@@ -27,38 +33,21 @@ const mentalHealthOptions = Object.values(MentalHealthDescriptors).map(
     label: desc.charAt(0).toUpperCase() + desc.substring(1),
     value: desc,
   }),
-) as Option[];
+) as MentalHealthOption[];
 
 const physicalHealthOptions = Object.values(PhysicalHealthDescriptors).map(
   (desc) => ({
     label: desc.charAt(0).toUpperCase() + desc.substring(1),
     value: desc,
   }),
-) as Option[];
+) as PhysicalHealthOption[];
 
 export const HealthFormV2 = ({
   form,
 }: {
   form: UseFormReturn<z.infer<typeof daySchema>>;
 }) => {
-  // const form = useForm<z.infer<typeof healthSchema>>({
-  //   resolver: zodResolver(healthSchema),
-  //   defaultValues: {
-  //     energy_level: 0,
-  //     mental_health: 0,
-  //     mental_health_description: [],
-  //     physical_health: 0,
-  //     physical_health_description: [],
-  //   },
-  // });
-
-  // const onSubmit = async (values: z.infer<typeof healthSchema>) => {
-  //   await createHealthAction(values);
-  // };
-
   return (
-    // <Form {...form}>
-    //   <form onSubmit={form.handleSubmit(onSubmit)}>
     <FormContainer>
       <>
         <h5>Mental Health</h5>
@@ -91,6 +80,10 @@ export const HealthFormV2 = ({
               <FormLabel>Mental Health Description</FormLabel>
               <FormControl>
                 <Select
+                  defaultValue={field.value?.map((c) => ({
+                    value: c,
+                    label: c.substring(0, 1).toUpperCase() + c.substring(1),
+                  }))}
                   closeMenuOnSelect={false}
                   isMulti
                   options={mentalHealthOptions}
@@ -103,10 +96,6 @@ export const HealthFormV2 = ({
             </FormItem>
           )}
         />
-        {/* </>
-        </FormContainer>
-        <FormContainer>
-          <> */}
         <h5>Physical Health</h5>
         <FormField
           control={form.control}
@@ -158,6 +147,10 @@ export const HealthFormV2 = ({
               <FormLabel>Physical Health Description</FormLabel>
               <FormControl>
                 <Select
+                  defaultValue={field.value?.map((c) => ({
+                    value: c,
+                    label: c.substring(0, 1).toUpperCase() + c.substring(1),
+                  }))}
                   closeMenuOnSelect={false}
                   isMulti
                   options={physicalHealthOptions}
@@ -170,10 +163,7 @@ export const HealthFormV2 = ({
             </FormItem>
           )}
         />
-        {/* <Button type="submit">Submit</Button> */}
       </>
     </FormContainer>
-    //   </form>
-    // </Form>
   );
 };

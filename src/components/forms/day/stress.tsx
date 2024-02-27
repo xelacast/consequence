@@ -14,8 +14,9 @@ import {
 
 import Select from "react-select";
 import { Textarea } from "~/components/ui/textarea";
-import { StressSymptoms } from "@prisma/client";
+import { type $Enums, StressSymptoms } from "@prisma/client";
 import TimePicker from "react-time-picker";
+import { datePickerFormater } from "~/lib/dates";
 
 const stressOptions = Object.values(StressSymptoms).map((symptom) => {
   return {
@@ -28,7 +29,7 @@ const stressOptions = Object.values(StressSymptoms).map((symptom) => {
 }) as Options[];
 
 interface Options {
-  value: string;
+  value: $Enums.StressSymptoms;
   label: string;
 }
 
@@ -69,6 +70,10 @@ export const StressForm = ({
               <FormLabel>Stress Symptoms</FormLabel>
               <FormControl>
                 <Select
+                  defaultValue={field.value?.map((c) => ({
+                    value: c,
+                    label: c.substring(0, 1).toUpperCase() + c.substring(1),
+                  }))}
                   options={stressOptions}
                   onChange={(e) =>
                     field.onChange(e.map((c: { value: string }) => c.value))
@@ -92,7 +97,12 @@ export const StressForm = ({
             <FormItem>
               <FormLabel>Notes (optional)</FormLabel>
               <FormControl>
-                <Textarea className="resize-none" {...field} maxLength={250} />
+                <Textarea
+                  className="resize-none"
+                  {...field}
+                  value={field.value ?? ""}
+                  maxLength={250}
+                />
               </FormControl>
               <FormDescription>
                 Jot down any more information you would like to be aware of. Max
@@ -104,15 +114,22 @@ export const StressForm = ({
         />
         <FormField
           control={form.control}
-          name="stress.time_of_day"
+          name="stress.time_of_day_string"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Time of Day</FormLabel>
               <FormControl>
                 <TimePicker
                   {...field}
-                  onChange={(e) => field.onChange(e)}
-                  value={field.value || ""}
+                  onChange={(e: string | null) => {
+                    const time = datePickerFormater({
+                      time: e,
+                      selectedDate: form.getValues("date"),
+                    });
+                    form.setValue("stress.time_of_day", time);
+                    field.onChange(e);
+                  }}
+                  value={field.value ?? ""}
                 />
               </FormControl>
               <FormDescription>

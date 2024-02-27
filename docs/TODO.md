@@ -15,7 +15,7 @@ Make each form modular. Have the designs as schema/form => action => CRUD DB
   - [x] Mental Health Descriptors for select drop down menu
 - [x] Misc
 
-  - [ ] Make one large form for the misc. Its one off yes/no with timeframes. (might not be worth it to remove only a few lines of code)
+  - [x] Make one large form for the misc. Its one off yes/no with timeframes. (might not be worth it to remove only a few lines of code)
 
 - [ ] Success messages on forms
   - [ ] Clear forms on success
@@ -48,8 +48,23 @@ Feb 14th, 2024
     - [ ] Add a section for a crash
 
 - CRUD
-- [ ] I can look back in time and edit entries
+- [x] I can look back in time and edit entries
 - [x] I can see the journal/day entry based on the selected day
-- [ ] Health descriptors are not being saved correctly. Fix this asap
-- [ ] Zod Schema is hard to work with for the use case I want=
-- [ ] Users are required to fill out health, stress, and sleep. These are three things that anybody can describe at a given moment of the day.
+- [x] Health descriptors are not being saved correctly. Fix this asap
+- [x] Zod Schema is hard to work with for the use case I want=
+- [x] Users are required to fill out health, stress, and sleep. These are three things that anybody can describe at a given moment of the day.
+- [ ] I can add extra stress entries
+- [ ] I can add extra health/food/crash entries where applicable
+
+- Features
+  -- These components will be highly dependent of eachother. Exactly the same almost
+- [ ] Users can have multiple entries for stress
+- [ ] Users can have multiple entries for health
+
+- [ ] Fix updateDay.tsx, schema.ts, and dayAction to accomadate multiple uploads for each.
+
+- [x] fix exercise selection data insert
+- [ ] Users will receive a success message after updating the day
+- [ ] Users will receive a success message after creating a day
+
+- [ ] Fix logic for initial state for dayprovider context

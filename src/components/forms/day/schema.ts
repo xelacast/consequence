@@ -17,16 +17,21 @@ import {
  */
 
 export const sleepSchema = z.object({
+  id: z.string().optional(),
   hours: z.number(),
-  quality: z.array(z.string()),
+  quality: z.array(z.string()).min(1).max(5),
   rating: z.number(),
+  notes: z.string().optional().nullable(),
 });
 
+/**
+ * @relationship with day one-to-many
+ */
 export const supplementSchema = z.object({
-  toggle: z.boolean().default(false),
+  toggle: z.boolean().default(false).optional(),
   name: z.nativeEnum(Supplements).optional(),
   amount: z.number().optional(),
-  time_taken: z.string(),
+  time_taken_string: z.string().optional(), // for timePicker value this will be formated with datePickerFormater
   measurement: z
     .object({
       label: z.string(),
@@ -35,32 +40,47 @@ export const supplementSchema = z.object({
     .optional(),
   supplements: z.array(
     z.object({
+      id: z.string().optional(),
       name: z.nativeEnum(Supplements),
       amount: z.number(),
       measurement: z.nativeEnum(Measurements),
-      time_taken: z.string(),
+      time_taken: z.string().or(z.date()).or(z.null()).optional(),
     }),
   ),
 });
 
+/**
+ * @relationship with day one-to-many
+ */
 export const stressSchema = z.object({
+  id: z.string().optional(),
   rating: z.number().max(10).min(1),
-  notes: z.string().optional(),
+  notes: z.string().optional().nullable(),
   symptoms: z.array(z.nativeEnum(StressSymptoms)).max(5),
-  time_of_day: z.string(),
+  time_of_day: z.union([z.string(), z.date()]),
+  time_of_day_string: z.string().optional(),
 });
 
+/**
+ * @relationship with day one-to-many
+ */
 export const exerciseSchema = z.object({
+  id: z.string().optional(),
   toggle: z.boolean().default(false).optional(),
   type: z.nativeEnum(ExerciseType),
   duration: z.number(),
   intensity: z.enum(["low", "medium", "high"]),
-  time_of_day: z.string(),
+  time_of_day_string: z.string().optional(),
+  time_of_day: z.union([z.string(), z.date()]),
   fasted: z.boolean().default(false),
   notes: z.string().optional(),
 });
 
+/**
+ * @relationship with day one-to-many
+ */
 export const healthSchema = z.object({
+  id: z.string().optional(),
   physical_health: z.number().max(10).min(0),
   physical_health_description: z
     .array(z.nativeEnum(PhysicalHealthDescriptors))
@@ -75,6 +95,7 @@ export const healthSchema = z.object({
 });
 
 export const mealsSchema = z.object({
+  id: z.string().optional(),
   meal: z.string(),
   notes: z.string().optional(),
   time_of_day: z.string(),
@@ -91,17 +112,22 @@ export const mealsSchema = z.object({
     .nullable(),
 });
 
+/**
+ * @relationship with day one-to-one
+ */
 export const miscSchema = z.object({
+  id: z.string().optional(),
   meditation: z.boolean().default(false),
   intermittent_fasting: z.boolean().default(false),
   cold_shower: z.boolean().default(false),
 });
 
 export const daySchema = z.object({
-  date: z.string(),
-  sleep: sleepSchema,
-  stress: stressSchema,
-  health: healthSchema,
+  id: z.string().optional(),
+  date: z.string().optional(),
+  sleep: sleepSchema, // required
+  stress: stressSchema, // required
+  health: healthSchema, // required
   exercise: exerciseSchema.optional().superRefine((data, ctx) => {
     if (data?.toggle) {
       // make the supplements required
@@ -132,134 +158,4 @@ export const daySchema = z.object({
     }
   }),
   misc: miscSchema,
-});
-
-/**
- * Update Day Schema
- *
- */
-
-export const updateSleepSchema = z.object({
-  hours: z.number(),
-  quality: z.array(z.string()),
-  rating: z.number(),
-  notes: z.string().nullable(),
-});
-
-export const updateSupplementSchema = z.object({
-  toggle: z.boolean().default(false), // going to cause an issue
-  name: z.nativeEnum(Supplements).optional(),
-  amount: z.number().optional(),
-  measurement: z
-    .object({
-      label: z.string(),
-      value: z.nativeEnum(Measurements),
-    })
-    .optional(),
-  time_taken: z.string().optional(),
-  supplements: z.array(
-    z.object({
-      // id: z.string(),
-      name: z.nativeEnum(Supplements),
-      amount: z.number(),
-      measurement: z.nativeEnum(Measurements),
-      time_taken: z.string().or(z.date()).or(z.null()),
-    }),
-  ),
-});
-
-export const updateStressSchema = z
-  .object({
-    id: z.string(),
-    rating: z.number().max(10).min(1),
-    notes: z.string().optional().nullable(),
-    symptoms: z.array(z.nativeEnum(StressSymptoms)).max(5),
-    time_of_day: z.date(),
-  })
-  .array();
-
-export const updateExerciseSchema = z.object({
-  id: z.string(),
-  toggle: z.boolean().default(false).optional(),
-  type: z.nativeEnum(ExerciseType),
-  duration: z.number(),
-  intensity: z.enum(["low", "medium", "high"]),
-  time_of_day: z.string(),
-  fasted: z.boolean().default(false),
-});
-
-export const updateHealthSchema = z
-  .object({
-    id: z.string(),
-    physical_health: z.number().max(10).min(0),
-    physical_health_description: z
-      .array(z.nativeEnum(PhysicalHealthDescriptors))
-      .max(5),
-    mental_health: z.number().max(10).min(1),
-    mental_health_description: z
-      .array(z.nativeEnum(MentalHealthDescriptors))
-      .max(5),
-    energy_levels: z.number().max(10).min(1),
-  })
-  .array();
-
-export const updateMealsSchema = z.object({
-  meal: z.string(),
-  notes: z.string().optional(),
-  time_of_day: z.string(),
-  calorie_intake: z.number().optional(),
-  macros: z
-    .object({
-      protein: z.number().nullable(),
-      carbs: z.number().nullable(),
-      fats: z.number().nullable(),
-      sugars: z.number().nullable(),
-      fiber: z.number().nullable(),
-      sodium: z.number().nullable(),
-    })
-    .nullable(),
-});
-
-export const updateMiscSchema = z.object({
-  meditation: z.boolean().default(false),
-  intermittent_fasting: z.boolean().default(false),
-  cold_shower: z.boolean().default(false),
-});
-
-// This doesn't make sense. If the day is present the fields to create a day from the schema are required then these objects are never null.
-export const updateDaySchema = z.object({
-  id: z.string(),
-  sleep: updateSleepSchema.nullable(),
-  stress: updateStressSchema,
-  health: updateHealthSchema,
-  exercise: updateExerciseSchema.optional().superRefine((data, ctx) => {
-    if (data?.toggle) {
-      // make the supplements required
-      if (
-        !data.duration &&
-        !data.intensity &&
-        !data.time_of_day &&
-        !data.type
-      ) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Supplements are required",
-          path: ["supplements"],
-        });
-      }
-    }
-  }),
-  supplements: updateSupplementSchema.superRefine((data, ctx) => {
-    if (data?.toggle) {
-      // make the supplements required
-      if (data.supplements && data.supplements?.length < 1) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Supplements are required",
-          path: ["supplements"],
-        });
-      }
-    }
-  }),
-  misc: miscSchema.nullable(),
 });

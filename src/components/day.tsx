@@ -15,12 +15,12 @@ import { Form } from "./ui/form";
 import { Button } from "./ui/button";
 import { Fragment } from "react";
 import { createDayAction } from "~/lib/actions/dayAction";
-import { datePickerFormater } from "~/lib/dates";
 import {
+  type Context,
   DayProvider,
   useDayForm,
   useDayFormDispatch,
-} from "~/lib/state/context/dayContext";
+} from "~/lib/state/dayContext";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
 import { cn } from "~/lib/utils";
@@ -32,21 +32,17 @@ import { cn } from "~/lib/utils";
  * @description This is the container for all the forms for create day.
  * I was originally going to use seperate forms for each section but I think
  * it would be better to have all the forms in one place. This might be a bit messy
- * ? How will I create modularity? The schema and forms aren't too hard to change
  */
 
 type DayForm = UseFormReturn<z.infer<typeof daySchema>>;
 
-export const DayForms = ({ date }: { date: string }) => {
+export const CreateDayForms = ({ date }: { date: string }) => {
   const form = useForm<z.infer<typeof daySchema>>({
     resolver: zodResolver(daySchema),
     defaultValues: {
       date: date,
-      supplements: {
-        supplements: [],
-        measurement: { label: "mg", value: "mg" },
-        amount: 0,
-        time_taken: dayjs().hour() + ":" + dayjs().minute(),
+      stress: {
+        time_of_day: dayjs().hour() + ":" + dayjs().minute(),
       },
       misc: {
         cold_shower: false,
@@ -57,32 +53,23 @@ export const DayForms = ({ date }: { date: string }) => {
   });
 
   const onSubmit = async (values: z.infer<typeof daySchema>) => {
-    // must set appropriate dates values for supplements, exercise, stress
-    if (values.supplements?.supplements)
-      values.supplements.supplements = values.supplements?.supplements?.map(
-        (supp) => {
-          return {
-            ...supp,
-            time_taken: datePickerFormater({ time: supp.time_taken }),
-          };
-        },
-      );
-    if (values?.exercise?.time_of_day)
-      values.exercise.time_of_day = datePickerFormater({
-        time: values.exercise.time_of_day,
-      });
-    if (values.stress.time_of_day)
-      values.stress.time_of_day = datePickerFormater({
-        time: values.stress.time_of_day,
-      });
-
-    console.log(values);
-    const res = await createDayAction(values);
-    console.log(res);
+    await createDayAction(values);
   };
 
+  return <DayFormContainer form={form} onSubmit={onSubmit} />;
+};
+
+export const DayFormContainer = ({
+  initialState,
+  form,
+  onSubmit,
+}: {
+  initialState?: Context;
+  form: UseFormReturn<z.infer<typeof daySchema>>;
+  onSubmit: (values: z.infer<typeof daySchema>) => void;
+}) => {
   return (
-    <DayProvider>
+    <DayProvider initialState={initialState}>
       <div className="flex flex-row">
         <Form {...form}>
           <FormsToAdd
@@ -108,35 +95,40 @@ export const DayForms = ({ date }: { date: string }) => {
   );
 };
 
-// Multiple components to add to this list based on an object/list to render to the client. ie. an add button on the UI to add a new form to the list
 /**
- *
- * @contextWrapper DayFormProvider
- * @param className, form<daySchema>
- * @returns list of forms to add to the context
+ * @param className, form
+ * @returns checkboxs for the forms to add to the context
+ * @description This component is tightly coupled to the dayForm context. It is used to add forms to the context. It is also used to toggle the forms in the context. In the edit form page the DayProvider State is initialized with the appropriate forms based on state provided to the component. ~/app/src/dashboard/day/components/updateDay.tsx
  */
 
-const FormsToAdd = ({
+export const FormsToAdd = ({
   className,
   form,
 }: {
   className?: string;
-  form: DayForm;
+  form: DayForm | UseFormReturn<z.infer<typeof daySchema>>;
 }) => {
   const dispatch = useDayFormDispatch();
+  console.log(
+    Object.values(form.getValues("misc")).filter(
+      (s) => typeof s === "boolean" && s,
+    ),
+  );
+  // for the checkbox. Mainly used for the edit feature for intial state rendering
+  const { supplements, exercise, misc } = form.getValues();
+  const checked = {
+    supps: supplements?.toggle ? true : false,
+    misc: misc ? true : false,
+    exercise: exercise?.toggle ? true : false,
+  };
+
   return (
     <section id="added-forms" className={cn(className)}>
       <div className={"flex flex-col"}>
-        {/* <FormCheckBox
-          dispatch={dispatch}
-          node={SupplementFormV2}
-          form={form}
-          name={"Supplements"}
-          formLabel="supplements.supplements"
-        /> */}
         <Label htmlFor="supplements">
           <Checkbox
             id="supplements"
+            defaultChecked={checked.supps}
             onCheckedChange={(e: boolean) => {
               form.setValue("supplements.toggle", e);
               if (e) dispatch({ node: SupplementFormV2, type: "ADD" });
@@ -151,6 +143,7 @@ const FormsToAdd = ({
         <Label htmlFor="exercise">
           <Checkbox
             id="exercise"
+            defaultChecked={checked.exercise}
             onCheckedChange={(e: boolean) => {
               form.setValue("exercise.toggle", e);
               if (e) dispatch({ node: ExerciseFormV2, type: "ADD" });
@@ -164,6 +157,11 @@ const FormsToAdd = ({
         </Label>
         <Label htmlFor="misc">
           <Checkbox
+            defaultChecked={
+              Object.values(form.getValues("misc")).filter(
+                (s) => typeof s === "boolean" && s,
+              ).length > 0
+            }
             id="misc"
             onCheckedChange={(e: boolean) => {
               if (e) {
@@ -182,25 +180,26 @@ const FormsToAdd = ({
 
 // Boiler plate for the form add checkbox
 // const FormCheckBox = ({
-//   dispatch,
 //   node,
 //   form,
 //   name,
 //   formLabel,
 // }: {
-//   dispatch: Reducer;
 //   node: Node;
 //   form: DayForm;
-//   name: string;
+//   name: typeof form.control._names;
 //   formLabel: keyof z.infer<typeof daySchema>; // cant use generics unless a pick/partial is used only for the optional fields
 // }) => {
+//   const dispatch = useDayFormDispatch();
+//   const Node = node
 //   return (
 //     <Label htmlFor={name}>
 //       <Checkbox
 //         id={name}
+//         name={name}
 //         onCheckedChange={(e) => {
 //           // form.setValue(`${formLabel}.toggle`, e); // * need a formLabel type to take a partial/pick of the form schema
-//           if (e) dispatch({ node, type: "ADD" });
+//           if (e) dispatch({ node: Node, type: "ADD" });
 //           else {
 //             // need custom value setting since all schemas are different
 //             form.setValue(formLabel, undefined);
@@ -214,7 +213,7 @@ const FormsToAdd = ({
 // };
 
 // Component UI of the forms that are added to the context
-const AddedForm = ({
+export const AddedForm = ({
   form,
 }: {
   form: UseFormReturn<z.infer<typeof daySchema>>;

@@ -4,18 +4,54 @@ import { currentUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import type { z } from "zod";
+import { z } from "zod";
 import {
-  daySchema,
-  type supplementSchema,
+  healthSchema,
+  miscSchema,
+  sleepSchema,
+  stressSchema,
+  supplementSchema,
 } from "~/components/forms/day/schema";
 import { db } from "~/server/db";
-import type { exerciseSchema } from "~/components/forms/day/schema";
+import { exerciseSchema } from "~/components/forms/day/schema";
 import type { day } from "@prisma/client";
+import { currentDate } from "../dates";
 
-export const createDayAction = async (formData: z.infer<typeof daySchema>) => {
-  const data = daySchema.parse(formData);
-  data.date = dayjs(data.date).toISOString();
+const createDaySchema = z.object({
+  stress: stressSchema.omit({ time_of_day_string: true }),
+  exercise: exerciseSchema
+    .omit({ time_of_day_string: true, toggle: true })
+    .optional(),
+  date: z.string().optional(),
+  id: z.string().optional(),
+  health: healthSchema,
+  sleep: sleepSchema,
+  supplements: supplementSchema
+    .omit({
+      amount: true,
+      measurement: true,
+      name: true,
+      time_taken_string: true,
+      toggle: true,
+    })
+    .optional(),
+  misc: miscSchema,
+});
+
+export const createDayAction = async (
+  formData: z.infer<typeof createDaySchema>,
+) => {
+  const validatedFields = createDaySchema.safeParse(formData);
+
+  if (!validatedFields.success)
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Update Invoice.",
+    };
+
+  const data = validatedFields.data;
+
+  const date = currentDate(data.date);
 
   // verify user
   const user = await currentUser();
@@ -24,17 +60,22 @@ export const createDayAction = async (formData: z.infer<typeof daySchema>) => {
   const { id } = user;
 
   // stress, health, and sleep are required fields. All other form fields are optional
-  let day: day;
   try {
     // find a day. If the day has the same date, update the day
     // create day with required fields
-    day = await db.day.create({
+    await db.day.create({
       data: {
         user: { connect: { clerk_id: id } },
-        date: data.date,
+        date: date,
         sleep: { create: data.sleep },
         stress: { create: data.stress },
         health: { create: { ...data.health, time: dayjs().toDate() } },
+        exercise: { create: data.exercise },
+        supplements: {
+          createMany: {
+            data: data.supplements?.supplements.map((s) => s) ?? [],
+          },
+        },
         form_misc: { create: data.misc },
       },
     });
@@ -44,48 +85,109 @@ export const createDayAction = async (formData: z.infer<typeof daySchema>) => {
   }
 
   // optional fields if present
-  try {
-    if (data.supplements && data.supplements.supplements.length > 0) {
-      await createSupplements(data.supplements, day.id);
-    }
-    if (data.exercise) {
-      await createExercise(data.exercise, day.id);
-    }
-  } catch (err) {
-    return { error: "error", status: 500, message: "Internal Server Error" };
-  }
+  // try {
+  //   if (data.supplements && data.supplements.supplements.length > 0) {
+  //     await createSupplements(data.supplements, day.id);
+  //   }
+  //   if (data.exercise) {
+  //     await createExercise(data.exercise, day.id);
+  //   }
+  // } catch (err) {
+  //   return { error: "error", status: 500, message: "Internal Server Error" };
+  // }
 
   revalidatePath(`/dashboard/day/${formData.date}`);
   redirect(`/dashboard/day/${formData.date}`);
 };
 
-const createExercise = async (
-  exerciseData: z.infer<typeof exerciseSchema>,
-  day_id: string,
-) => {
-  delete exerciseData.toggle;
+const updateSupps = supplementSchema
+  .omit({
+    amount: true,
+    measurement: true,
+    name: true,
+    time_taken: true,
+    toggle: true,
+  })
+  .optional();
+
+const updateSchema = z.object({
+  id: z.string(),
+  supplement: updateSupps,
+  exercise: exerciseSchema.optional(),
+  sleep: sleepSchema,
+  health: healthSchema,
+  stress: stressSchema,
+  misc: miscSchema,
+});
+
+/**
+ *
+ * @param formData
+ * @param date string in YYYY-MM-DD for redirect and recache
+ * @returns response of success message
+ */
+export async function editDayAction(
+  formData: z.infer<typeof updateSchema>,
+  date: string,
+) {
+  // data verification
+  const validatedFields = updateSchema.safeParse(formData);
+
+  if (!validatedFields.success)
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Update Invoice.",
+    };
+
+  const data = validatedFields.data;
+  console.log(data);
+  // errors incase updates fail
+  // const errors: { message: string }[] = [];
+
+  const user = await authenticate();
+
+  let day: day;
   try {
-    await db.exercise.create({
+    // user authentication for the day
+    day = await db.day.findFirstOrThrow({
+      where: {
+        id: data.id,
+        user: { clerk_id: user.id },
+      },
+    });
+
+    await db.day.update({
+      where: { id: day.id },
       data: {
-        day: { connect: { id: day_id } },
-        ...exerciseData,
+        sleep: { update: data.sleep },
+        stress: {
+          update: { where: { id: data.stress.id }, data: data.stress },
+        },
+        health: {
+          update: { where: { id: data.health.id }, data: data.health },
+        },
+        form_misc: { update: data.misc },
+        supplements: {
+          updateMany: data?.supplement?.supplements.map((supp) => {
+            return {
+              where: { id: supp.id },
+              data: supp,
+            };
+          }),
+        },
       },
     });
   } catch (err) {
     return { error: "error", status: 500, message: "Internal Server Error" };
   }
-};
+  revalidatePath(`/dashboard/day/${date}`);
+  redirect(`/dashboard/day/${date}`);
+}
 
-const createSupplements = async (
-  data: z.infer<typeof supplementSchema>,
-  day_id: string,
-) => {
-  await db.supplements.createMany({
-    data: data.supplements.map((supp) => {
-      return {
-        ...supp,
-        day_id,
-      };
-    }),
-  });
-};
+export async function authenticate() {
+  const user = await currentUser();
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+  return user;
+}
