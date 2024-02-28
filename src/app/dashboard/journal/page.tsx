@@ -13,11 +13,12 @@ export default async function Page() {
   if (userId) {
     journalEntries = await db.journal.findMany({
       where: {
-        day: {
-          user: {
-            clerk_id: userId,
-          },
+        user: {
+          clerk_id: userId,
         },
+      },
+      orderBy: {
+        date: "asc",
       },
     });
   } else {

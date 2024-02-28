@@ -106,14 +106,14 @@ export default function UpdateDay({
       sleep,
       stress: {
         ...stress,
-        time_of_day_string: twentyFourHourClock({ time: stress.time_of_day }),
+        time_of_day_string: twentyFourHourClock({ time: stress?.time_of_day }),
       },
     },
   });
 
   // delete me
   useEffect(() => {
-    console.log("errors", form.formState.errors);
+    console.log(form.formState.errors);
   }, [form.formState.errors]);
 
   const onSubmit = async (data: z.infer<typeof daySchema>) => {

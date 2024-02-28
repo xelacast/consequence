@@ -28,6 +28,7 @@ model user {
   clerk_id           String   @unique
   day                day[]
   created_at         DateTime  @default(now())
+  journal            journal[]
 
   @@unique([clerk_id, email])
   @@index([clerk_id, email])
@@ -48,7 +49,7 @@ model day {
   form_misc       form_misc?
   stress stress[]
   meals meals[]
-  journal journal[]
+  // journal journal[]
 
   @@index([date, user_id])
 }
@@ -226,8 +227,10 @@ model journal {
   date        DateTime @default(now())
   title       String  @default("Journal Entry")
   content     String
-  day         day      @relation(fields: [day_id], references: [id], onDelete: Cascade)
-  day_id      String
+  // day        day      @relation(fields: [day_id], references: [id], onDelete: Cascade)
+  // day_id     String @default("")
+  user        user     @relation(fields: [user_id], references: [clerk_id], onDelete: Cascade)
+  user_id     String
 }
 
 // medications

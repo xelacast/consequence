@@ -1,11 +1,6 @@
 import dayjs from "dayjs";
-import { DatePicker } from "./components/datePicker";
-import React from "react";
+import { redirect } from "next/navigation";
 
 export default async function Page() {
-  return (
-    <div>
-      <DatePicker date={dayjs().toDate()} />
-    </div>
-  );
+  redirect(`/dashboard/day/${dayjs().format("YYYY-MM-DD")}`);
 }

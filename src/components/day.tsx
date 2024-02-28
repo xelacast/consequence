@@ -109,11 +109,6 @@ export const FormsToAdd = ({
   form: DayForm | UseFormReturn<z.infer<typeof daySchema>>;
 }) => {
   const dispatch = useDayFormDispatch();
-  console.log(
-    Object.values(form.getValues("misc")).filter(
-      (s) => typeof s === "boolean" && s,
-    ),
-  );
   // for the checkbox. Mainly used for the edit feature for intial state rendering
   const { supplements, exercise, misc } = form.getValues();
   const checked = {
@@ -158,6 +153,7 @@ export const FormsToAdd = ({
         <Label htmlFor="misc">
           <Checkbox
             defaultChecked={
+              form.getValues("misc") &&
               Object.values(form.getValues("misc")).filter(
                 (s) => typeof s === "boolean" && s,
               ).length > 0

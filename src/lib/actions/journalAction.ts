@@ -2,15 +2,15 @@
 
 import { db } from "~/server/db";
 import { journalSchema } from "../schemas/journal";
-import { authenticate } from "./dayAction";
 import type { z } from "zod";
 import { currentDate, currentDay } from "../dates";
 import { revalidatePath } from "next/cache";
+import { auth } from "@clerk/nextjs";
 
 export async function createJournalAction(
   values: z.infer<typeof journalSchema>,
 ) {
-  const { clerk_user_id } = await authenticate();
+  const { userId } = auth().protect();
 
   const validatedFields = journalSchema.safeParse(values);
 
@@ -30,7 +30,7 @@ export async function createJournalAction(
   day = await db.day.findFirst({
     where: {
       date: { gte: startOfDay, lte: endOfDay },
-      user: { clerk_id: clerk_user_id },
+      user: { clerk_id: userId },
     },
     select: {
       id: true,
@@ -44,7 +44,7 @@ export async function createJournalAction(
       await db.journal.create({
         data: {
           content: content,
-          day_id: day.id,
+          user_id: userId,
           date: entryDate,
           title,
         },
@@ -58,14 +58,14 @@ export async function createJournalAction(
       day = await db.day.create({
         data: {
           date: entryDate,
-          user: { connect: { clerk_id: clerk_user_id } },
+          user: { connect: { clerk_id: userId } },
         },
       });
 
       await db.journal.create({
         data: {
           content: content,
-          day_id: day.id,
+          user_id: userId,
           date: entryDate,
           title,
         },
