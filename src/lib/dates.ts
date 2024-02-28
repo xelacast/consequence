@@ -38,7 +38,7 @@ export const datePickerFormater = ({
   return date;
 };
 
-export const currentDay = (date: string | Date) => {
+export const currentDay = (date: string | Date | undefined) => {
   // get start of day MM/DD/YYYY
   const startOfDay = dayjs(date).startOf("day").toISOString();
   const endOfDay = dayjs(date).endOf("day").toISOString();

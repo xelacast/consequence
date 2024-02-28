@@ -25,7 +25,7 @@ model user {
   updated_at         DateTime  @default(now())
   username           String?
   allowed_to_login   Boolean   @default(true)
-  clerk_id           String?   @unique
+  clerk_id           String   @unique
   day                day[]
   created_at         DateTime  @default(now())
 
@@ -48,6 +48,7 @@ model day {
   form_misc       form_misc?
   stress stress[]
   meals meals[]
+  journal journal[]
 
   @@index([date, user_id])
 }
@@ -218,6 +219,15 @@ model health {
 
   day    day    @relation(fields: [day_id], references: [id], onDelete: Cascade)
   day_id String
+}
+
+model journal {
+  id          String   @id @default(uuid())
+  date        DateTime @default(now())
+  title       String  @default("Journal Entry")
+  content     String
+  day         day      @relation(fields: [day_id], references: [id], onDelete: Cascade)
+  day_id      String
 }
 
 // medications

@@ -8,7 +8,7 @@ export default async function Page({ params }: { params: { date: string } }) {
   const { date } = params;
   const { supplements, id, exercise, form_misc, health, sleep, stress } =
     await readDayData(date);
-  123; // should I parse the data above?
+  // should I parse the data above?
   // const pars = updateDaySchema.parse(day);
 
   return (

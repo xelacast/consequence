@@ -144,7 +144,7 @@ export async function editDayAction(
   // errors incase updates fail
   // const errors: { message: string }[] = [];
 
-  const user = await authenticate();
+  const { clerk_user_id } = await authenticate();
 
   let day: day;
   try {
@@ -152,7 +152,7 @@ export async function editDayAction(
     day = await db.day.findFirstOrThrow({
       where: {
         id: data.id,
-        user: { clerk_id: user.id },
+        user: { clerk_id: clerk_user_id },
       },
     });
 
@@ -184,10 +184,11 @@ export async function editDayAction(
   redirect(`/dashboard/day/${date}`);
 }
 
+// this is not proper authentication
 export async function authenticate() {
   const user = await currentUser();
-  if (!user) {
-    throw new Error("Unauthorized");
-  }
-  return user;
+  if (!user) return { error: "error", status: 403, message: "Unothorized" };
+
+  const { id } = user;
+  return { clerk_user_id: id };
 }

@@ -1,4 +1,4 @@
-import { auth, redirectToSignIn } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs";
 import { db } from "~/server/db";
 import { currentDay } from "~/lib/dates";
 import { redirect } from "next/navigation";
@@ -7,12 +7,7 @@ import { redirect } from "next/navigation";
 // * must fix the create actions and edit actions
 
 export async function readDayData(date: string) {
-  const { userId }: { userId: string | null } = auth();
-
-  if (!userId) {
-    redirectToSignIn();
-  }
-
+  const { userId } = auth().protect();
   const { startOfDay, endOfDay } = currentDay(date);
 
   try {
@@ -106,11 +101,7 @@ export async function readDayData(date: string) {
 }
 
 export const readDayDataForEdit = async (date: string) => {
-  const { userId }: { userId: string | null } = auth();
-
-  if (!userId) {
-    redirectToSignIn();
-  }
+  const { userId } = auth().protect();
 
   const { startOfDay, endOfDay } = currentDay(date);
 

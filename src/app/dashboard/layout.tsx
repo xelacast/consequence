@@ -6,7 +6,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main>
       <DashboardHeader />
-      {children}
+      <div className="2xl container mx-auto">{children}</div>
     </main>
   );
 };

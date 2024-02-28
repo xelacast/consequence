@@ -10,21 +10,22 @@ Supplement tracking for physical and mental health. Future updates turn it into 
 
 ## Features
 
-- [ ] Users can look back on their history and edit days
+- [x] Users can look back on their history and edit days
 - [ ] Users can see a calendar view of their application
 - [ ] Users can set goals.
 - [ ] Users can see their progress with goals.
 - [ ] Users can see their successfully goals/non successful goals
 - [ ] Users can add as many habits as they want to track
 - [ ] Users are presented with a dashboard view of their metrics
+- [ ] Users can add journal entries to their dashboard
 
 - [x] Users can choose metrics for supplement intake
 - [x] Users can choose between mg and mcg in supplements form [link](./TODO.md)
 
 - [ ] UX: Users can have configured supplement values to add instead of filling out a form everytime
 
-- [ ] Users can see which data they have submitted in the forms and update
-- [ ] Users are provided another "window" to view the data they submitted
+- [x] Users can see which data they have submitted in the forms and update
+- [x] Users are provided another "window" to view the data they submitted
 
 ### Stat Tracking (Gamification)
 

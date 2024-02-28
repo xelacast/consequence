@@ -17,9 +17,6 @@ Make each form modular. Have the designs as schema/form => action => CRUD DB
 
   - [x] Make one large form for the misc. Its one off yes/no with timeframes. (might not be worth it to remove only a few lines of code)
 
-- [ ] Success messages on forms
-  - [ ] Clear forms on success
-
 Feb 14th, 2024
 
 - [ ] Coding design: Make the boiler plate for the input component reusable. This will save hundreds of lines of code and a lot of copy pasta
@@ -53,8 +50,6 @@ Feb 14th, 2024
 - [x] Health descriptors are not being saved correctly. Fix this asap
 - [x] Zod Schema is hard to work with for the use case I want=
 - [x] Users are required to fill out health, stress, and sleep. These are three things that anybody can describe at a given moment of the day.
-- [ ] I can add extra stress entries
-- [ ] I can add extra health/food/crash entries where applicable
 
 - Features
   -- These components will be highly dependent of eachother. Exactly the same almost
@@ -67,4 +62,8 @@ Feb 14th, 2024
 - [ ] Users will receive a success message after updating the day
 - [ ] Users will receive a success message after creating a day
 
-- [ ] Fix logic for initial state for dayprovider context
+- [x] Fix logic for initial state for dayprovider context
+
+### Testing
+
+- [ ] test clerk user creation/deletion/update functionality
