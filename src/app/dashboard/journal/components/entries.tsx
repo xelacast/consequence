@@ -49,18 +49,20 @@ export function JournalContainer({ entries }: { entries: journal[] }) {
     const val = values;
     form.setValue("content", "");
 
-    // append then update?
+    // append then update the id of the entry after creation
     append({
       content: values.content,
       time: new Date(),
       id: undefined,
       title: values.title,
     });
-
+    // How can I make this parrellel? with the append action? IE dont append until the id is created
+    // in case of an error with the database/server side call?
     const { id } = await createJournalAction(val);
 
-    // Set ID after creation to show that the entry has been created on the client side without a blocking state
-    // set ID of the entry to the id of the entry for updating purposes
+    // Set ID after creation to show that the entry has been created on the client side without
+    // a blocking state for the client
+    // set ID of the entry to the entry in the fieldArray for updating journal
     form.setValue(`entries.${fields.length}.id`, id);
   };
   return (
@@ -89,7 +91,6 @@ export function JournalContainer({ entries }: { entries: journal[] }) {
   );
 }
 
-// So far today I worked out at Vasa. I hit back, bi, shoulders and did dips to hit my triceps. My shoulders are a little tight but nothing to complain about. My body is looking good and its the biggest Ive been ever in my life. My stomach is feeling a bit bloated today but not compared to yesterday, it was bloated all day and my cognition felt off too. It was hard to concentrate and focus. Felt like my mind was working at 50%. I played Call of Duty and was doing subpar at best. So far ive worked on this application for 3 hours today. It feels good. I feel like I can make faster progress with the more time I spend building. My brain is fully wrapping itself around the problem and getting it to fruition. The day is not even half way over. Lets keep building.
 /**
  *
  * @returns React.FC
