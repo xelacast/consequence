@@ -26,8 +26,7 @@ import { Label } from "./ui/label";
 import { cn } from "~/lib/utils";
 
 /**
- *
- * @param date: string
+ * @param date: string YYYY-MM-DD format
  * @returns all forms for the day
  * @description This is the container for all the forms for create day.
  * I was originally going to use seperate forms for each section but I think
@@ -113,7 +112,7 @@ export const FormsToAdd = ({
   const { supplements, exercise, misc } = form.getValues();
   const checked = {
     supps: supplements?.toggle ? true : false,
-    misc: misc ? true : false,
+    misc: misc ? true : false, // fix this to check if any of the misc fields are true
     exercise: exercise?.toggle ? true : false,
   };
 

@@ -3,7 +3,7 @@
 import { db } from "~/server/db";
 import { journalSchema } from "../schemas/journal";
 import type { z } from "zod";
-import { currentDate, currentDay } from "../dates";
+import { currentDate } from "../dates";
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs";
 
@@ -22,62 +22,26 @@ export async function createJournalAction(
 
   const { content, date, title } = validatedFields.data;
 
-  const { startOfDay, endOfDay } = currentDay(date);
-
   const entryDate = currentDate(date);
 
-  let day: { id: string } | null;
-  day = await db.day.findFirst({
-    where: {
-      date: { gte: startOfDay, lte: endOfDay },
-      user: { clerk_id: userId },
-    },
-    select: {
-      id: true,
-    },
-  });
-
-  if (day) {
-    try {
-      // this will throw if there is no day.
-      // A huge dependency on the day existing how to handle this?
-      await db.journal.create({
-        data: {
-          content: content,
-          user_id: userId,
-          date: entryDate,
-          title,
-        },
-      });
-    } catch (error) {
-      console.error(error);
-      return { message: "Error creating journal entry", error: error };
-    }
-  } else {
-    try {
-      day = await db.day.create({
-        data: {
-          date: entryDate,
-          user: { connect: { clerk_id: userId } },
-        },
-      });
-
-      await db.journal.create({
-        data: {
-          content: content,
-          user_id: userId,
-          date: entryDate,
-          title,
-        },
-      });
-    } catch (err) {
-      console.error(err);
-      return { message: "Error creating journal entry", error: err };
-    }
+  let entry_id: string;
+  try {
+    const { id } = await db.journal.create({
+      data: {
+        content: content,
+        user_id: userId,
+        date: entryDate,
+        title,
+      },
+    });
+    entry_id = id;
+  } catch (error) {
+    console.error(error);
+    return { message: "Error creating journal entry", error: error };
   }
 
   revalidatePath("/journal");
-  return { message: "Journal Entry Created", error: null };
+  return { message: "Journal Entry Created", error: null, id: entry_id };
 }
 
 export const updateJournalAction = async (

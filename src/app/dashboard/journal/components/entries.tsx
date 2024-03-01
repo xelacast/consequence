@@ -40,22 +40,28 @@ export function JournalContainer({ entries }: { entries: journal[] }) {
     },
   });
 
-  const { append, update } = useFieldArray({
+  const { append, update, fields } = useFieldArray({
     control: form.control,
     name: "entries",
   });
 
   const onSubmit = async (values: z.infer<typeof journalSchema>) => {
+    const val = values;
+    form.setValue("content", "");
+
+    // append then update?
     append({
       content: values.content,
       time: new Date(),
-      id: values.id,
+      id: undefined,
       title: values.title,
-    }); // make the user feel like the entry is added before adding it. Good ux practice.
-    const val = values;
-    // quick write to the db
-    form.setValue("content", "");
-    await createJournalAction(val);
+    });
+
+    const { id } = await createJournalAction(val);
+
+    // Set ID after creation to show that the entry has been created on the client side without a blocking state
+    // set ID of the entry to the id of the entry for updating purposes
+    form.setValue(`entries.${fields.length}.id`, id);
   };
   return (
     <Fragment>
