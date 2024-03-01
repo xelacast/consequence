@@ -64,6 +64,22 @@ Feb 14th, 2024
 
 - [x] Fix logic for initial state for dayprovider context
 
+March 1st
+
+- [ ] UX: Users can have configured supplement values to add instead of filling out a form everytime
+
+Users are shown more attributes to choose from for symptoms/descriptions
+
+- [ ] Mental Health
+- [ ] Physcial Health
+- [ ] Stress
+- [ ] Sleep
+
+- Mental/Physical Health
+- [ ] Add descriptions/notes section (optional for user)
+- Sleep
+  - [ ] Add desciption section for sleep (optional for user)
+
 ### Testing
 
 - [ ] test clerk user creation/deletion/update functionality

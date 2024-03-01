@@ -17,15 +17,30 @@ Supplement tracking for physical and mental health. Future updates turn it into 
 - [ ] Users can see their successfully goals/non successful goals
 - [ ] Users can add as many habits as they want to track
 - [ ] Users are presented with a dashboard view of their metrics
-- [ ] Users can add journal entries to their dashboard
+- [x] Users can add journal entries to their dashboard
 
 - [x] Users can choose metrics for supplement intake
 - [x] Users can choose between mg and mcg in supplements form [link](./TODO.md)
 
 - [ ] UX: Users can have configured supplement values to add instead of filling out a form everytime
+- [ ] Users are shown more attributes to choose from for symptoms/descriptions
+- [ ] Users can create their own symptoms
 
 - [x] Users can see which data they have submitted in the forms and update
 - [x] Users are provided another "window" to view the data they submitted
+
+#### Exercise tracking
+
+- [ ] Choose which type of exercise you worked. ie chest, tri, bi, back, shoulders, legs
+- [ ] Then track more specific details like workouts, workout types/categories
+
+### Life coach
+
+- [ ] Users can talk with a chat bot to get feedback on their lives
+      What system would I have in play? I would need a overarching direction to guide the users in. This would allow them to give the best information for the best response of the life coach.
+- [ ] Users can select predefined templates to prompt the chat bot.
+- [ ] Chat bot is connected to all of the users data and only the users data.
+      Data will never be collected to interfere with the users daily life.
 
 ### Stat Tracking (Gamification)
 
@@ -55,3 +70,43 @@ Use Different forms with different data steps that all work together. Use contex
 
 Right now I have the read process routed through the url and load a "new" component on the page change with router.push(...). I think page state will be better for render quality. Then if the user wants to update/create they will be routed accordingly to day/[date]/create or edit
 Need to look into some design patterns
+
+## Brain Storm
+
+I came across an app called Cronometer. Its doing very similiar things to what I am creating. One Feature i really like from them is how they track all the micronutrients and macro nutrients, and weight. This would be highly beneficial for me but part of its paid. I think ill make it for myself.
+They are using 3rd parts databases to pull in all their data. NCCDB, US Department of Agriculture, nutritionix.com, fooddb, etc.
+This can feed the meals feature and show body weight, kcal, target kcal, micronutrients, macronutrients, and many more things.
+
+I want a dashboard that I can customize for myself. To have all of it one location based off of my life. Robust and easy to use.
+
+I want custom meals, supplements, and foods I regularly eat and use on the go so I can click and go. I do not want to enter in data all the time.
+
+What if I could build a chatbot agent who I could talk to and it can add my "day" for me. A text to data feature. I feel like this would be game changing.
+
+I want to track vitals. Anything that can be easily tracked by yourself
+
+- Blood pressure
+- Blood Glucose levels
+- Heart rate
+- ETC
+
+I want to be able to import data from the doctors office
+
+- Vitamins/nutrients
+- Other testing features
+
+I want to provide real facts from credible sources. There is a "normal" level for nutrients but that does not mean its right. The normal changes for ethnicity, body weight/muscle percentage and many other factors.
+
+### Brain storm features
+
+- [ ] Vitals tracking
+- [ ] Data from doctors office
+- [ ] Nutrient consumption tracking through supplements/food
+- [ ] Customizable dashboard
+- [ ] Real and credible information on a healthy lifestyle, supplements, eating, sleeping, relationships and fullfillment
+- [ ] Custom made and configurable meals/supplements/etc
+- [ ] Fasting window that is triggered by a click/schedule and can be automated by food entries or a click of a button
+- [ ] Notification system for reminders/daily tips/ health awarenes
+- [ ] AI Chatbot to analyze correlations in your data and how you are feeling
+- [ ] A generalized metric for tracking mental health and phsyical health
+- [ ] Sleep tracker from an integrated eletronic device and sleep quality from the perspective of the person, ie user input.
