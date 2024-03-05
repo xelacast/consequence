@@ -15,7 +15,7 @@ Make each form modular. Have the designs as schema/form => action => CRUD DB
   - [x] Mental Health Descriptors for select drop down menu
 - [x] Misc
 
-  - [x] Make one large form for the misc. Its one off yes/no with timeframes. (might not be worth it to remove only a few lines of code)
+  - [x] Make one large form for the misc. Its one off yes/no with time frames. (might not be worth it to remove only a few lines of code)
 
 Feb 14th, 2024
 
@@ -28,12 +28,12 @@ Feb 14th, 2024
     - Fields should be as followed
     - [x] Stress scale (1-10)
     - [x] Stress symptoms (select 5)
-    - [x] Description of current state of mind/life/jounral (optional for user)
+    - [x] Description of current state of mind/life/journal (optional for user)
     - [x] Actions for form
 - Mental/Physical Health
   - [ ] Add descriptions/notes section (optional for user)
 - Sleep
-  - [ ] Add desciption section for sleep (optional for user)
+  - [ ] Add description section for sleep (optional for user)
 - Meals
 
   - [ ] Add a meals category for when you ate/snacked/big meals
@@ -56,13 +56,13 @@ Feb 14th, 2024
 - [ ] Users can have multiple entries for stress
 - [ ] Users can have multiple entries for health
 
-- [ ] Fix updateDay.tsx, schema.ts, and dayAction to accomadate multiple uploads for each.
+- [ ] Fix updateDay.tsx, schema.ts, and dayAction to accommodate multiple uploads for each.
 
 - [x] fix exercise selection data insert
 - [ ] Users will receive a success message after updating the day
 - [ ] Users will receive a success message after creating a day
 
-- [x] Fix logic for initial state for dayprovider context
+- [x] Fix logic for initial state for day provider context
 
 March 1st
 
@@ -71,14 +71,34 @@ March 1st
 Users are shown more attributes to choose from for symptoms/descriptions
 
 - [ ] Mental Health
-- [ ] Physcial Health
+- [ ] Physical Health
 - [ ] Stress
 - [ ] Sleep
 
 - Mental/Physical Health
 - [ ] Add descriptions/notes section (optional for user)
 - Sleep
-  - [ ] Add desciption section for sleep (optional for user)
+  - [ ] Add description section for sleep (optional for user)
+
+#### Supplement configuration
+
+- [x] when the user submits the supplement to be added it will remove all ingredients and reset the latest supplement name, brand name, and service size
+- [x] When the user submits the supplement the supplements will be updated on the left hand side
+- [x] Users can toggle which supplements that they are actively taking to lower the amount to choose from on the main form.
+- [ ] Users can edit their supplements they input incase of mistakes
+- [ ] User can choose from a predefined supplement list when filling out their forms
+- [ ] When users manually create supplements, they are given a list of predefined ingredients to abide to standards for data metrics
+- [ ] When users manually create supplements, that are given a list of predefined brand names and list of products from those brand names.
+- [ ] Users can select which supplements and how many capsules/servings they have taken on the day form.
+
+Security for supplementation configuration
+
+- [ ] Rate limiting
+- [x] Form validation and max lengths
+- [ ] Script injections testing
+- [ ] Component Testing
+
+Issues: Data standards for micro-nutrients and macro-nutrients. Either cast a large net or have very specific values/names to go by.
 
 ### Testing
 

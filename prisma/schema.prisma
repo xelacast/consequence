@@ -29,9 +29,17 @@ model user {
   day                day[]
   created_at         DateTime  @default(now())
   journal            journal[]
+  configurations     configurations?
 
   @@unique([clerk_id, email])
   @@index([clerk_id, email])
+}
+
+model configurations {
+  id          String   @id @default(uuid())
+  user_id String @unique
+  user    user @relation(fields: [user_id], references: [clerk_id], onDelete: Cascade)
+  supplements supplement[]
 }
 
 model day {
@@ -76,9 +84,42 @@ model supplements {
   time_of_day_taken TimeOfDay?
   time_taken        DateTime?
   measurement       Measurements @default(mg)
+  supplement        supplement[]
 
   day    day    @relation(fields: [day_id], references: [id], onDelete: Cascade)
   day_id String
+}
+
+model supplement {
+  id          String       @id @default(uuid())
+  name String
+  brand_name String
+  description String?
+  serving_size Int
+  serving_size_unit Measurements
+  warnings String?
+  notes String?
+  storage String?
+  company String?
+  manufacture String?
+  activated Boolean @default(true)
+  supplements        supplements? @relation(fields: [supplement_id], references: [id], onDelete: Cascade) // this will be used for connecting the supplement to the user
+  supplement_id     String?
+  configuration        configurations         @relation(fields: [configuration_id], references: [id], onDelete: Cascade)
+  configuration_id     String
+  ingredients ingredient[]
+  date_added DateTime @default(now())
+}
+
+// List of ingredients for the supplement table
+model ingredient {
+  id          String       @id @default(uuid())
+  name        String
+  amount_per_serving Int // mcg
+  amount_per_serving_unit Measurements
+  daily_value Int?
+  supplement  supplement @relation(fields: [supplement_id], references: [id], onDelete: Cascade)
+  supplement_id String
 }
 
 model stress {
@@ -352,6 +393,8 @@ enum Measurements {
   oz
   ml
   l
+  capsule
+  IU
 }
 
 enum StressSymptoms {

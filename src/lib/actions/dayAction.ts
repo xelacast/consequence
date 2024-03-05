@@ -55,7 +55,7 @@ export const createDayAction = async (
 
   // verify user
   const user = await currentUser();
-  if (!user) return { error: "error", status: 403, message: "Unothorized" };
+  if (!user) return { error: "error", status: 403, message: "Unauthorized" };
 
   const { id } = user;
 
