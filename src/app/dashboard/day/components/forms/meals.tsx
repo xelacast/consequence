@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import { mealsSchema } from "../day/schema";
+import { mealsSchema } from "../../../../../lib/schemas/day";
 import { ExerciseType } from "@prisma/client";
 import { FormContainer } from "~/components/ui/formcontainer";
 import {
@@ -52,44 +52,39 @@ export const MealsForm = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormContainer>
-          <>
-            <h5>Exercise</h5>
-            <FormField
-              control={form.control}
-              name="meal"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Meal</FormLabel>
-                  <FormControl>
-                    <Select
-                      options={exerciseTypeOptions}
-                      // @ts-expect-error This is a bug in the react-select types
-                      onChange={(e) => field.onChange(e.value)}
-                      placeholder="Exercise Type"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <h5>Exercise</h5>
+          <FormField
+            control={form.control}
+            name="meal"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Meal</FormLabel>
+                <FormControl>
+                  <Select
+                    options={exerciseTypeOptions}
+                    // @ts-expect-error This is a bug in the react-select types
+                    onChange={(e) => field.onChange(e.value)}
+                    placeholder="Exercise Type"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="time_of_day"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Time of Day</FormLabel>
-                  <FormControl>
-                    <TimePicker
-                      {...field}
-                      onChange={(e) => field.onChange(e)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
+          <FormField
+            control={form.control}
+            name="time_of_day"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Time of Day</FormLabel>
+                <FormControl>
+                  <TimePicker {...field} onChange={(e) => field.onChange(e)} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </FormContainer>
       </form>
     </Form>

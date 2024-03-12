@@ -3,7 +3,8 @@
  * @param str can be one word or many words
  * @returns all words capitalized
  */
-export const toCapitalize = (str: string) => {
+export const toCapitalize = (str?: string) => {
+  if (!str) return "";
   const strings = str.split(" ");
   const capitalized = strings
     .map((s) => {

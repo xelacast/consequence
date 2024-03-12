@@ -2,9 +2,11 @@ import dayjs from "dayjs";
 
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import LocalizedFormat from "dayjs/plugin/localizedFormat";
 
 dayjs.extend(timezone);
 dayjs.extend(utc);
+dayjs.extend(LocalizedFormat);
 
 dayjs.tz.setDefault("America/Denver");
 
@@ -14,9 +16,10 @@ export default dayjs;
  *
  * @param time "HH:MM" format and Date in isoString/string/date format
  * @returns Date
- * @description: This function takes in a string from <TimePicker /> and returns an ISOstring
+ * @description: This function takes in a string from <TimePicker /> and returns an ISOstring.
+ * @considerationOfChange dont destructure components with undefined types just use normal prarameters.
  */
-export const datePickerFormater = ({
+export const datePickerFormatter = ({
   time,
   selectedDate,
 }: {
@@ -61,4 +64,13 @@ export const twentyFourHourClock = ({
   const hours = date.hour();
 
   return `${hours}:${minutes}`;
+};
+
+/**
+ *
+ * @param date objects
+ * @returns current local time string in am/pm format
+ */
+export const currentTime = (date?: string | Date | null) => {
+  return dayjs(date).format("LT");
 };

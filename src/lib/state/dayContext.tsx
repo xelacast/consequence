@@ -1,9 +1,7 @@
 import { type Dispatch, createContext, useContext, useReducer } from "react";
-import type { UseFormReturn } from "react-hook-form";
-import type { z } from "zod";
-import type { daySchema } from "~/components/forms/day/schema";
 
-export type Node = React.FC<{ form: UseFormReturn<z.infer<typeof daySchema>> }>;
+// export type Node = React.FC<{ form: UseFormReturn<z.infer<typeof daySchema>> }>;
+export type Node = React.FC;
 
 type ReducerTypes = "ADD" | "REMOVE";
 
@@ -31,11 +29,16 @@ export const DayProvider = ({
   initialState,
 }: {
   children: React.ReactNode;
-  initialState?: Context;
+  initialState?: Node[];
 }) => {
   if (!initialState) initialState = [];
 
-  const [forms, dispatch] = useReducer(dayFormReducer, initialState);
+  const initState: Context = initialState.map((node, index) => ({
+    node,
+    key: index.toString(),
+  }));
+
+  const [forms, dispatch] = useReducer(dayFormReducer, initState);
   return (
     <DayFormContext.Provider value={forms}>
       <DayFormDispatchContext.Provider value={dispatch}>

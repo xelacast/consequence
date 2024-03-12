@@ -3,23 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import { daySchema } from "~/components/forms/day/schema";
+import { daySchema, type updateSchema } from "~/lib/schemas/day";
 import type { $Enums } from "@prisma/client";
-import { DayFormContainer } from "~/components/day";
-import { SupplementFormV2 } from "~/components/forms/day/supplements";
-import { ExerciseFormV2 } from "~/components/forms/day/exercise";
-import { useEffect } from "react";
-import { MiscForm } from "~/components/forms/day/misc";
+import { DayFormContainer } from "~/app/dashboard/day/components/day";
+import { ConfiguredSupplements } from "~/app/dashboard/day/components/forms/supplements";
+import { ExerciseFormV2 } from "~/app/dashboard/day/components/forms/exercise";
 import { editDayAction } from "~/lib/actions/dayAction";
-import { twentyFourHourClock } from "~/lib/dates";
-
-type Supplements = {
-  id?: string;
-  name?: $Enums.Supplements;
-  amount?: number;
-  time_taken?: Date | null | string;
-  measurement?: $Enums.Measurements;
-}[];
+import type { Supplements } from "~/lib/types/supplements";
+import type { Node } from "~/lib/state/dayContext";
 
 type Exercise = {
   type?: $Enums.ExerciseType;
@@ -65,7 +56,7 @@ type Stress = {
 /**
  * @param id: string
  * @returns a form to update the current day the user selects
- * @dependeencies DayFormContainer, SupplementFormV2, ExerciseFormV2, StressForm, HealthFormV2, SleepFormV2
+ * @dependencies DayFormContainer, SupplementFormV2, ExerciseFormV2, StressForm, HealthFormV2, SleepFormV2
  */
 
 export default function UpdateDay({
@@ -85,56 +76,81 @@ export default function UpdateDay({
   form_misc: Misc;
   health: Health;
   sleep: Sleep;
-  stress: Stress; // how will i show multiple stress forms with react-hook-form?
+  stress: Stress;
 }) {
   const form = useForm<z.infer<typeof daySchema>>({
     resolver: zodResolver(daySchema),
     defaultValues: {
-      supplements: {
-        toggle: supplements.length > 0,
-        supplements,
-      },
-      exercise: {
-        toggle: exercise.length > 0,
-        ...exercise[0]!, // this is a hack. I need to find a better way to do this
-        time_of_day_string: twentyFourHourClock({
-          time: exercise[0]?.time_of_day,
-        }),
-      },
+      date,
+      supplements:
+        supplements.length > 0
+          ? {
+              toggle: true,
+              input: supplements.map((s) => ({
+                consumed_amount: s.amount,
+                consumed_unit: s.measurement as $Enums.Measurements,
+                time: s.time_taken,
+                ingredients: s.supplement?.ingredients,
+                description: s.supplement?.description,
+                supplements_id: s.id,
+                supplement: { ...s.supplement },
+              })),
+            }
+          : { toggle: false },
+      exercise: exercise[0] ?? undefined,
+      // this is a hack. I need to find a better way to do this
       misc: form_misc,
       health,
       sleep,
       stress: {
         ...stress,
-        time_of_day_string: twentyFourHourClock({ time: stress?.time_of_day }),
       },
     },
   });
 
-  // delete me
-  useEffect(() => {
-    console.log(form.formState.errors);
-  }, [form.formState.errors]);
-
   const onSubmit = async (data: z.infer<typeof daySchema>) => {
     // transform data to updateSchema
-    const updateData = {
+    const updateData: z.infer<typeof updateSchema> = {
       ...data,
       id,
-      supplements: data.supplements?.supplements,
+      supplements: data?.supplements?.input
+        ? data.supplements.input.map((s) => ({
+            id: s.supplements_id,
+            consumed_amount: s.consumed_amount,
+            consumed_unit: s.consumed_unit,
+            time: s.time as Date | null, // time is being updated wrong
+            consumed_supplement_id: s.supplement.id!,
+          }))
+        : [],
       exercise: data.exercise,
     };
 
     await editDayAction(updateData, date);
   };
 
-  // TODO: Find a better way to do this. When there is more data/forms to fill out it will need to be configered somewhere. Also forms will show up without correct data
-  // this is adding forms to the edit regardless of the data
-  const t = [
-    { node: SupplementFormV2, key: "1" },
-    { node: ExerciseFormV2, key: "2" },
-    { node: MiscForm, key: "3" },
-  ];
+  const formInitState = useFormNodes({
+    supplements: supplements.length,
+    exercise: exercise.length,
+  });
 
-  return <DayFormContainer initialState={t} form={form} onSubmit={onSubmit} />;
+  return (
+    <DayFormContainer
+      initialState={formInitState}
+      form={form}
+      onSubmit={onSubmit}
+    />
+  );
 }
+
+const useFormNodes = ({
+  supplements,
+  exercise,
+}: {
+  supplements: number;
+  exercise: number;
+}) => {
+  const output: Node[] = [];
+  if (supplements > 0) output.push(ConfiguredSupplements);
+  if (exercise) output.push(ExerciseFormV2);
+  return output;
+};

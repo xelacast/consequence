@@ -1,4 +1,4 @@
-import { type UseFormReturn } from "react-hook-form";
+import { useFormContext, type UseFormReturn } from "react-hook-form";
 import type { z } from "zod";
 import { FormContainer } from "~/components/ui/formcontainer";
 import { Checkbox } from "~/components/ui/checkbox";
@@ -9,21 +9,17 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { type daySchema } from "./schema";
+import { type daySchema } from "../../../../../lib/schemas/day";
+import type { DayType } from "../day";
 
-export const MiscForm = ({
-  form,
-}: {
-  form: UseFormReturn<z.infer<typeof daySchema>>;
-}) => {
+export const MiscForm = () => {
+  const form = useFormContext<DayType>();
   return (
     <FormContainer>
-      <>
-        <h5>More Forms</h5>
-        <MeditationForm form={form} />
-        <IntermittentFastingForm form={form} />
-        <ColdShowerForm form={form} />
-      </>
+      <h5>More Forms</h5>
+      <MeditationForm form={form} />
+      <IntermittentFastingForm form={form} />
+      <ColdShowerForm form={form} />
     </FormContainer>
   );
 };

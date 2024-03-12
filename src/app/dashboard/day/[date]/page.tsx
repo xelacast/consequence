@@ -1,15 +1,16 @@
 import { readDayData } from "~/lib/data/day";
 import { DatePicker } from "../components/datePicker";
-import type { $Enums } from "@prisma/client";
+import type { $Enums, ingredient } from "@prisma/client";
 import dayjs from "dayjs";
 import { CreateDayButton } from "../components/handlers";
+import { SupplementHoverCard } from "../../configure/supplements/components/supplementHover";
+import { toCapitalize } from "~/lib/misc/useUpperCase";
+import { currentTime } from "~/lib/dates";
 
 export default async function Page({ params }: { params: { date: string } }) {
   const { date } = params;
   const { supplements, id, exercise, form_misc, health, sleep, stress } =
     await readDayData(date);
-  // should I parse the data above?
-  // const pars = updateDaySchema.parse(day);
 
   return (
     <div className="container">
@@ -171,34 +172,57 @@ const ExerciseContainer = ({ exercise }: { exercise: Exercise }) => {
   );
 };
 
-export type Supps = {
+type PartialSupplement = {
+  name: string;
+  brand_name: string;
+  serving_size: number;
+  serving_size_unit: $Enums.Measurements;
+  description: string | null;
+  ingredients: ingredient[];
+} | null;
+
+export type Supplements = {
   id: string;
-  name: $Enums.Supplements;
   amount: number;
   time_taken: Date | null;
   measurement: $Enums.Measurements;
+  supplement: PartialSupplement;
 }[];
 
-const SupplementContainer = ({ supplements }: { supplements: Supps }) => {
+/**
+ *
+ * @param supplements
+ * @returns HoverCard for the supplements
+ * @description This component is for the supplements section of the day page (READ)
+ */
+const SupplementContainer = ({ supplements }: { supplements: Supplements }) => {
   return (
-    <section className="rounded-lg border p-2">
-      <h3>Supplements</h3>
-      <div className="flex flex-wrap gap-2">
-        {supplements?.map((supp) => (
-          <div
-            className="flex w-1/3 flex-row gap-2 rounded-md border bg-white p-2 shadow-sm"
-            key={supp.id}
-          >
-            <div>{supp.name.split("_").join(" ")}</div>
-            <span>
-              {supp.amount} {supp.measurement}
-            </span>
-            <div>
-              {dayjs(supp.time_taken).format("YYYY-MM-DDTHH:mm:ssZ[Z]") ??
-                "N/A"}
-            </div>
-          </div>
-        ))}
+    <section>
+      <div className="rounded-lg border p-2">
+        <h3>Supplements</h3>
+        <ul className="wrap flex flex-row flex-wrap gap-2">
+          {supplements?.map((field) => (
+            <li key={field.id} className="basis-full md:basis-auto">
+              <SupplementHoverCard supplement={field.supplement}>
+                <div className="flex flex-grow cursor-pointer flex-col rounded-md bg-gradient-to-tr from-[#EE9CA7] to-[#FFDDE1] p-3 px-4 font-mono">
+                  <div className="flex justify-between">
+                    <div>{currentTime(field?.time_taken)}</div>
+                    <div>
+                      {field.amount}
+                      {field.measurement == "capsule"
+                        ? " capsule(s)"
+                        : field.measurement}
+                    </div>
+                  </div>
+                  <div className="flex justify-center text-lg">
+                    {toCapitalize(field.supplement?.name)} -{" "}
+                    {toCapitalize(field.supplement?.brand_name)}
+                  </div>
+                </div>
+              </SupplementHoverCard>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

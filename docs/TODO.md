@@ -66,7 +66,7 @@ Feb 14th, 2024
 
 March 1st
 
-- [ ] UX: Users can have configured supplement values to add instead of filling out a form everytime
+- [x] UX: Users can have configured supplement values to add instead of filling out a form every time
 
 Users are shown more attributes to choose from for symptoms/descriptions
 
@@ -90,8 +90,25 @@ Users are shown more attributes to choose from for symptoms/descriptions
 - [ ] When users manually create supplements, they are given a list of predefined ingredients to abide to standards for data metrics
 - [ ] When users manually create supplements, that are given a list of predefined brand names and list of products from those brand names.
 - [ ] Users can select which supplements and how many capsules/servings they have taken on the day form.
+- [ ] Update edit and edit action
+- [x] update create action
+      Security for supplementation configuration
+- [ ] Add time stamp to chosen supplement
+- [x] Update read action for supplements
+- [ ] Plan your features out appropriately so changes aren't so cumbersome and you can reuse components. I need designs and a laundry list of features to plan from
+- [ ] DO better schema planning. Everything is a fucking mess. WRITE DOWN A DEPENDENCY GRAPH
+- [ ] Reuse components so you stay D.R.Y
+- [ ] Backfill data from supplements
+- [ ] Update forms show appropriate forms based on information provided ie, exercise and supplements and 'more forms'
+- [ ] (optional) if a user un-clicks an optional form the data is saved if the user c it is being edited
 
-Security for supplementation configuration
+Issues Im running into
+Schema planning was very poor
+Naming files the same names even if they are in different folders is hard to work with
+FUcking A undefined objects
+Over engineering ts types
+type bloat (not having a single source of truth)... fuck me
+Making one big form for everything has made developing modular parts more problematic than it should've been
 
 - [ ] Rate limiting
 - [x] Form validation and max lengths

@@ -1,4 +1,4 @@
-import { CreateDayForms } from "~/components/day";
+import { CreateDayForms } from "~/app/dashboard/day/components/day";
 
 export default function Page({ params }: { params: { date: string } }) {
   // create a day based on the date and the user id

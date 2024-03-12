@@ -10,15 +10,16 @@ import {
   miscSchema,
   sleepSchema,
   stressSchema,
-  supplementSchema,
-} from "~/components/forms/day/schema";
+  updateSchema,
+} from "~/lib/schemas/day";
 import { db } from "~/server/db";
-import { exerciseSchema } from "~/components/forms/day/schema";
-import type { day } from "@prisma/client";
+import { exerciseSchema } from "~/lib/schemas/day";
+import { type day } from "@prisma/client";
 import { currentDate } from "../dates";
+import { supplementsSchema } from "../schemas/supplement";
 
 const createDaySchema = z.object({
-  stress: stressSchema.omit({ time_of_day_string: true }),
+  stress: stressSchema,
   exercise: exerciseSchema
     .omit({ time_of_day_string: true, toggle: true })
     .optional(),
@@ -26,15 +27,7 @@ const createDaySchema = z.object({
   id: z.string().optional(),
   health: healthSchema,
   sleep: sleepSchema,
-  supplements: supplementSchema
-    .omit({
-      amount: true,
-      measurement: true,
-      name: true,
-      time_taken_string: true,
-      toggle: true,
-    })
-    .optional(),
+  supplements: supplementsSchema.optional(),
   misc: miscSchema,
 });
 
@@ -61,7 +54,6 @@ export const createDayAction = async (
 
   // stress, health, and sleep are required fields. All other form fields are optional
   try {
-    // find a day. If the day has the same date, update the day
     // create day with required fields
     await db.day.create({
       data: {
@@ -73,7 +65,16 @@ export const createDayAction = async (
         exercise: { create: data.exercise },
         supplements: {
           createMany: {
-            data: data.supplements?.supplements.map((s) => s) ?? [],
+            data: data?.supplements?.input
+              ? data.supplements.input.map(
+                  ({ supplement, consumed_amount, consumed_unit, time }) => ({
+                    amount: consumed_amount,
+                    measurement: consumed_unit,
+                    time_taken: time, // needs to be converted to datetime
+                    supplement_id: supplement.id,
+                  }),
+                )
+              : [],
           },
         },
         form_misc: { create: data.misc },
@@ -84,46 +85,14 @@ export const createDayAction = async (
     return { error: "error", status: 500, message: "Could Not Create Day" };
   }
 
-  // optional fields if present
-  // try {
-  //   if (data.supplements && data.supplements.supplements.length > 0) {
-  //     await createSupplements(data.supplements, day.id);
-  //   }
-  //   if (data.exercise) {
-  //     await createExercise(data.exercise, day.id);
-  //   }
-  // } catch (err) {
-  //   return { error: "error", status: 500, message: "Internal Server Error" };
-  // }
-
   revalidatePath(`/dashboard/day/${formData.date}`);
   redirect(`/dashboard/day/${formData.date}`);
 };
 
-const updateSupps = supplementSchema
-  .omit({
-    amount: true,
-    measurement: true,
-    name: true,
-    time_taken: true,
-    toggle: true,
-  })
-  .optional();
-
-const updateSchema = z.object({
-  id: z.string(),
-  supplement: updateSupps,
-  exercise: exerciseSchema.optional(),
-  sleep: sleepSchema,
-  health: healthSchema,
-  stress: stressSchema,
-  misc: miscSchema,
-});
-
 /**
  *
  * @param formData
- * @param date string in YYYY-MM-DD for redirect and recache
+ * @param date string in YYYY-MM-DD
  * @returns response of success message
  */
 export async function editDayAction(
@@ -140,11 +109,11 @@ export async function editDayAction(
     };
 
   const data = validatedFields.data;
-  console.log(data);
-  // errors incase updates fail
-  // const errors: { message: string }[] = [];
 
-  const { clerk_user_id } = await authenticate();
+  const user = await currentUser();
+  if (!user) return { error: "error", status: 403, message: "Unauthorized" };
+
+  const { id } = user; // clerk_user_id
 
   let day: day;
   try {
@@ -152,7 +121,7 @@ export async function editDayAction(
     day = await db.day.findFirstOrThrow({
       where: {
         id: data.id,
-        user: { clerk_id: clerk_user_id },
+        user: { clerk_id: id },
       },
     });
 
@@ -167,28 +136,71 @@ export async function editDayAction(
           update: { where: { id: data.health.id }, data: data.health },
         },
         form_misc: { update: data.misc },
-        supplements: {
-          updateMany: data?.supplement?.supplements.map((supp) => {
-            return {
-              where: { id: supp.id },
-              data: supp,
-            };
-          }),
-        },
+        // I want both Id's in here but the way I have the schema setup makes this difficult
       },
     });
   } catch (err) {
     return { error: "error", status: 500, message: "Internal Server Error" };
   }
+
+  const supplements = await db.supplements.findMany({
+    where: { day_id: day.id },
+  });
+
+  // for deletion purposes only
+  const supplementIds = supplements.map((s) => s.id);
+  // make a list of supplements that are not in the update
+  // easy edge case is if theres supplements in the data pull but none in the update
+  const incomingSupplementIds = data.supplements
+    .map((s) => (typeof s.id === "string" ? s.id : ""))
+    .filter((s) => s !== "");
+
+  const supplementToDelete = findUniqueValues(
+    supplementIds,
+    incomingSupplementIds,
+  );
+
+  // when new supplements come in their id is unregistered so we know how to target them
+  const supplementsToCreate = data.supplements.filter((s) => !s.id);
+
+  // create if any new supplements are added
+  try {
+    await db.supplements.createMany({
+      data: supplementsToCreate.map((supp) => ({
+        amount: supp.consumed_amount,
+        measurement: supp.consumed_unit,
+        time_taken: supp.time,
+        supplement_id: supp.consumed_supplement_id,
+        day_id: day.id,
+      })),
+    });
+  } catch (err) {
+    return {
+      error: "error",
+      status: 500,
+      message: "Could not create supplements",
+    };
+  }
+
+  // delete supplements
+  try {
+    await db.supplements.deleteMany({
+      where: { id: { in: supplementToDelete } },
+    });
+  } catch (err) {
+    return {
+      error: "error",
+      status: 500,
+      message: "Could not delete supplements",
+    };
+  }
+
   revalidatePath(`/dashboard/day/${date}`);
   redirect(`/dashboard/day/${date}`);
 }
 
-// this is not proper authentication
-export async function authenticate() {
-  const user = await currentUser();
-  if (!user) return { error: "error", status: 403, message: "Unothorized" };
-
-  const { id } = user;
-  return { clerk_user_id: id };
+function findUniqueValues(arr1: string[], arr2: string[]) {
+  const set2 = new Set(arr2);
+  const uniqueValues = arr1.filter((value) => !set2.has(value));
+  return uniqueValues;
 }

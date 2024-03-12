@@ -7,14 +7,13 @@ const Page = async ({ params }: { params: { date: string } }) => {
   const { supplements, id, exercise, form_misc, health, sleep, stress } =
     await readDayDataForEdit(date);
 
+  console.log(exercise);
   // can I resuse the day form and make default values but send it to an update???
   // how can I detect which fields are being updated? and then trigger only those fields?
   // ? Should I parse the data with the daySchema?
 
-  // TODO: fix error below
   return (
     <UpdateDay
-      // day={day}
       date={date}
       id={id}
       supplements={supplements}

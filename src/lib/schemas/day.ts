@@ -6,8 +6,8 @@ import {
   MentalHealthDescriptors,
   PhysicalHealthDescriptors,
   StressSymptoms,
-  Supplements,
 } from "@prisma/client";
+import { supplementsSchema } from "./supplement";
 
 /**
  * @description the goal is to have a "it is optional until a
@@ -27,42 +27,18 @@ export const sleepSchema = z.object({
 /**
  * @relationship with day one-to-many
  */
-export const supplementSchema = z.object({
-  toggle: z.boolean().default(false).optional(),
-  name: z.nativeEnum(Supplements).optional(),
-  amount: z.number().optional(),
-  time_taken_string: z.string().optional(), // for timePicker value this will be formated with datePickerFormater
-  measurement: z
-    .object({
-      label: z.string(),
-      value: z.nativeEnum(Measurements),
-    })
-    .optional(),
-  supplements: z.array(
-    z.object({
-      id: z.string().optional(),
-      name: z.nativeEnum(Supplements),
-      amount: z.number(),
-      measurement: z.nativeEnum(Measurements),
-      time_taken: z.string().or(z.date()).or(z.null()).optional(),
-    }),
-  ),
-});
-
-/**
- * @relationship with day one-to-many
- */
 export const stressSchema = z.object({
   id: z.string().optional(),
   rating: z.number().max(10).min(1),
   notes: z.string().optional().nullable(),
   symptoms: z.array(z.nativeEnum(StressSymptoms)).max(5),
   time_of_day: z.union([z.string(), z.date()]),
-  time_of_day_string: z.string().optional(),
+  // time_of_day_string: z.string().optional(),
 });
 
 /**
  * @relationship with day one-to-many
+ * @description not a friendly schema to have optional on update
  */
 export const exerciseSchema = z.object({
   id: z.string().optional(),
@@ -128,34 +104,55 @@ export const daySchema = z.object({
   sleep: sleepSchema, // required
   stress: stressSchema, // required
   health: healthSchema, // required
-  exercise: exerciseSchema.optional().superRefine((data, ctx) => {
-    if (data?.toggle) {
-      // make the supplements required
-      if (
-        !data.duration &&
-        !data.intensity &&
-        !data.time_of_day &&
-        !data.type
-      ) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Supplements are required",
-          path: ["supplements"],
-        });
+  exercise: exerciseSchema
+    .superRefine((data, ctx) => {
+      if (data?.toggle) {
+        if (
+          !data.duration &&
+          !data.intensity &&
+          !data.time_of_day &&
+          !data.type
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Exercise is required if the toggle is on",
+            path: ["exercise"],
+          });
+        }
       }
-    }
-  }),
-  supplements: supplementSchema.optional().superRefine((data, ctx) => {
-    if (data?.toggle) {
-      // make the supplements required
-      if (data.supplements && data.supplements?.length < 1) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Supplements are required",
-          path: ["supplements"],
-        });
+    })
+    .optional(),
+  supplements: supplementsSchema
+    .superRefine((data, ctx) => {
+      if (data?.toggle) {
+        // make the supplements required
+        if (data.input && data.input?.length < 1) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Supplements are required",
+            path: ["supplements"],
+          });
+        }
       }
-    }
-  }),
+    })
+    .optional(),
+  misc: miscSchema,
+});
+
+export const updateSchema = z.object({
+  id: z.string(),
+  supplements: z
+    .object({
+      consumed_amount: z.number(),
+      consumed_unit: z.nativeEnum(Measurements),
+      time: z.date().nullable(),
+      id: z.string().optional(),
+      consumed_supplement_id: z.string(), // what is this?
+    })
+    .array(),
+  exercise: exerciseSchema.optional(),
+  sleep: sleepSchema,
+  health: healthSchema,
+  stress: stressSchema,
   misc: miscSchema,
 });

@@ -3,9 +3,11 @@ import { db } from "~/server/db";
 import { currentDay } from "~/lib/dates";
 import { redirect } from "next/navigation";
 
-// TODO: Fix relationships and how data is represeneted
-// * must fix the create actions and edit actions
-
+/**
+ *
+ * @param date
+ * @returns data from the day of creation
+ */
 export async function readDayData(date: string) {
   const { userId } = auth().protect();
   const { startOfDay, endOfDay } = currentDay(date);
@@ -41,11 +43,19 @@ export async function readDayData(date: string) {
         supplements: {
           select: {
             id: true,
-            name: true,
             amount: true,
-            // time_of_day_taken: true,
             time_taken: true,
             measurement: true,
+            supplement: {
+              select: {
+                name: true,
+                brand_name: true,
+                serving_size: true,
+                serving_size_unit: true,
+                description: true,
+                ingredients: true,
+              },
+            },
           },
         },
         health: {
@@ -57,8 +67,6 @@ export async function readDayData(date: string) {
             energy_levels: true,
             mental_health_description: true,
             physical_health_description: true,
-            // weight: true,
-            // date: true,
           },
         },
         form_misc: true,
@@ -136,11 +144,20 @@ export const readDayDataForEdit = async (date: string) => {
         supplements: {
           select: {
             id: true,
-            name: true,
             amount: true,
-            // time_of_day_taken: true,
             time_taken: true,
             measurement: true,
+            supplement: {
+              select: {
+                id: true,
+                name: true,
+                brand_name: true,
+                serving_size: true,
+                serving_size_unit: true,
+                description: true,
+                ingredients: true,
+              },
+            },
           },
         },
         health: {
@@ -152,8 +169,6 @@ export const readDayDataForEdit = async (date: string) => {
             energy_levels: true,
             mental_health_description: true,
             physical_health_description: true,
-            // weight: true,
-            // date: true,
           },
         },
         form_misc: true,
