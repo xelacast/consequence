@@ -54,6 +54,7 @@ When the user selects this product it will be put on a cache or in the database 
 - [ ] When users manually create supplements, that are given a list of predefined brand names and list of products from those brand names.
 - [ ] Users can select which supplements and how many capsules/servings they have taken on the day form.
 - [ ] Users can take a picture of a food/ingredients label to import the data. (AI Computer Vision)
+- [ ] There is a "type" on the supplements configuration to check for capsules/amount. User the measurement category and check for capsules vs mg/mg. OR let the user choose between serving size and amount taken? Then it can be calculated accordingly?
 
 Issues: Data standards for micro-nutrients and macro-nutrients. Either cast a large net or have very specific values/names to go by.
 

@@ -13,35 +13,21 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { SupplementSchema } from "~/lib/schemas/supplement";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup,
-} from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { FileTextIcon } from "@radix-ui/react-icons";
 import React, { useState } from "react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "~/components/ui/hover-card";
 import createSupplement, {
   updateSupplementActivation,
 } from "~/lib/actions/supplementAction";
-import { Measurements } from "@prisma/client";
 import { toCapitalize } from "~/lib/misc/useUpperCase";
 import type { SetSupplementStateAction } from "../page";
-
 import type {
   createSupplementSchema,
   readSupplementSchema,
 } from "~/lib/schemas/supplement";
+import { SelectMeasurement } from "./measurements";
+import { SupplementHoverCard as SHC } from "./supplementHover";
 
 export const ConfigureSupplements = ({
   className,
@@ -57,7 +43,6 @@ export const ConfigureSupplements = ({
   });
 
   const onSubmit = async (values: z.infer<typeof SupplementSchema>) => {
-    console.log(values);
     const {
       brand_name,
       name,
@@ -170,36 +155,7 @@ export const ConfigureSupplements = ({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="serving_size_unit"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Unit</FormLabel>
-                <FormControl>
-                  <Select
-                    {...field}
-                    onValueChange={field.onChange}
-                    value={(field.value as string) ?? ""}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Unit" />
-                      <SelectContent>
-                        <SelectGroup>
-                          {Object.values(Measurements).map((m) => (
-                            <SelectItem key={m} value={m}>
-                              {m}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </SelectTrigger>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <SelectMeasurement name="serving_size_unit" />
         </div>
         <AmountPerServing />
         <Button type="submit">Add Supplement</Button>
@@ -208,9 +164,6 @@ export const ConfigureSupplements = ({
   );
 };
 
-// adding ingredients can be comber some especially if there are more than 2.
-// I want to add functionality to take a picture of the ingredients and then it will be added to the form.
-// I want to add functionality to take a picture of the brand and supplement name and then it will be added to the form.\
 /**
  *
  * @param className String for className styling with tailwindcss on parent level for UI
@@ -335,35 +288,7 @@ const AmountPerServing = ({ className }: { className?: string }) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name={`ingredients.placeHolders.amount_per_serving_unit`}
-          render={({ field }) => (
-            <FormItem className="basis-20">
-              <FormLabel>Unit</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  value={(field.value as string) ?? ""}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Unit" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {Object.values(Measurements).map((m) => (
-                        <SelectItem key={m} value={m}>
-                          {m}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <SelectMeasurement name="ingredients.placeHolders.amount_per_serving_unit" />
       </div>
       <FormField
         name={`ingredients.placeHolders.daily_value`}
@@ -459,7 +384,7 @@ export const ShowConfiguredSupplements = ({
   );
 };
 
-const SupplementHoverCard = ({
+export const SupplementHoverCard = ({
   supplement,
   index,
   updateActivation,
@@ -470,51 +395,20 @@ const SupplementHoverCard = ({
 }) => {
   const [activated, setActivated] = useState(supplement.activated);
   return (
-    <HoverCard openDelay={100} closeDelay={100}>
-      <HoverCardTrigger>
-        <Button
-          name={`activation.${index}`}
-          id={`activation.${index}`}
-          className="flex gap-2 data-[activated=false]:bg-slate-500 data-[activated=true]:bg-green-500"
-          data-activated={activated}
-          onClick={async () => {
-            setActivated(!activated);
-            await updateActivation(supplement.id, !activated);
-          }}
-        >
-          {toCapitalize(supplement.name)} -{" "}
-          {toCapitalize(supplement.brand_name)}
-          <FileTextIcon />
-        </Button>
-      </HoverCardTrigger>
-
-      <HoverCardContent>
-        <div>
-          <div className="gap: 2 flex">
-            <span>Serving Size: </span>
-            <span className="flex gap-4">
-              {supplement.serving_size}
-              {supplement.serving_size_unit}
-            </span>
-          </div>
-          Ingredients
-          <ul>
-            {supplement.ingredients.map((ingredient, index) => {
-              return (
-                <li key={index}>
-                  <span className="wrap flex flex-row align-top">
-                    <p>{ingredient.name}:</p>
-                    <p>
-                      {ingredient.amount_per_serving}
-                      {ingredient.amount_per_serving_unit}
-                    </p>
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </HoverCardContent>
-    </HoverCard>
+    <SHC supplement={supplement}>
+      <Button
+        name={`activation.${index}`}
+        id={`activation.${index}`}
+        className="flex gap-2 data-[activated=false]:bg-slate-500 data-[activated=true]:bg-green-500"
+        data-activated={activated}
+        onClick={async () => {
+          setActivated(!activated);
+          await updateActivation(supplement.id!, !activated);
+        }}
+      >
+        {toCapitalize(supplement.name)} - {toCapitalize(supplement.brand_name)}
+        <FileTextIcon />
+      </Button>
+    </SHC>
   );
 };
