@@ -118,6 +118,9 @@ dependencies:
     version: 3.22.4
 
 devDependencies:
+  '@tanstack/eslint-plugin-query':
+    specifier: ^5.27.7
+    version: 5.27.7(eslint@8.56.0)(typescript@5.3.3)
   '@types/eslint':
     specifier: ^8.44.7
     version: 8.56.2
@@ -1386,6 +1389,18 @@ packages:
       typescript: 5.3.3
       zod: 3.22.4
     dev: false
+
+  /@tanstack/eslint-plugin-query@5.27.7(eslint@8.56.0)(typescript@5.3.3):
+    resolution: {integrity: sha512-I0bQGypBu7gmbjHhRPglZRnYZObiXu7JotDxqRJfjr8sP5YiCx2zm+qbQClrgUGER++Hx4EA4suL7hSiBMWgJg==}
+    peerDependencies:
+      eslint: ^8.0.0
+    dependencies:
+      '@typescript-eslint/utils': 6.20.0(eslint@8.56.0)(typescript@5.3.3)
+      eslint: 8.56.0
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+    dev: true
 
   /@tanstack/query-core@4.36.1:
     resolution: {integrity: sha512-DJSilV5+ytBP1FbFcEJovv4rnnm/CokuVvrBEtW/Va9DvuJ3HksbXUJEpI0aV1KtuL4ZoO9AVE6PyNLzF7tLeA==}

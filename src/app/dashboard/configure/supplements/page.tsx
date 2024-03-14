@@ -2,7 +2,7 @@
 
 import type { z } from "zod";
 import React, { useEffect, useState } from "react";
-import { useSupplements } from "~/lib/hooks/fetcher";
+import { useSupplements } from "~/lib/hooks/supplements";
 import type { readSupplementSchema } from "~/lib/schemas/supplement";
 import {
   ConfigureSupplements,

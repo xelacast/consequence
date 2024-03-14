@@ -45,7 +45,7 @@ model configurations {
 model day {
   id              String           @id @default(uuid())
   date            DateTime         @default(now())
-  user            user             @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user            user             @relation(fields: [user_id], references: [clerk_id], onDelete: Cascade)
   user_id         String
   sleep           sleep?
   supplements     supplements[]

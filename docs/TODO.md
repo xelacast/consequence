@@ -85,12 +85,12 @@ Users are shown more attributes to choose from for symptoms/descriptions
 - [x] when the user submits the supplement to be added it will remove all ingredients and reset the latest supplement name, brand name, and service size
 - [x] When the user submits the supplement the supplements will be updated on the left hand side
 - [x] Users can toggle which supplements that they are actively taking to lower the amount to choose from on the main form.
-- [ ] Users can edit their supplements they input incase of mistakes
-- [ ] User can choose from a predefined supplement list when filling out their forms
+- [x] Users can edit their supplements they input incase of mistakes
+- [x] User can choose from a predefined supplement list when filling out their forms
 - [ ] When users manually create supplements, they are given a list of predefined ingredients to abide to standards for data metrics
 - [ ] When users manually create supplements, that are given a list of predefined brand names and list of products from those brand names.
-- [ ] Users can select which supplements and how many capsules/servings they have taken on the day form.
-- [ ] Update edit and edit action
+- [x] Users can select which supplements and how many capsules/servings they have taken on the day form.
+- [x] Update edit and edit action
 - [x] update create action
       Security for supplementation configuration
 - [ ] Add time stamp to chosen supplement
@@ -99,7 +99,7 @@ Users are shown more attributes to choose from for symptoms/descriptions
 - [ ] DO better schema planning. Everything is a fucking mess. WRITE DOWN A DEPENDENCY GRAPH
 - [ ] Reuse components so you stay D.R.Y
 - [ ] Backfill data from supplements
-- [ ] Update forms show appropriate forms based on information provided ie, exercise and supplements and 'more forms'
+- [x] Update forms show appropriate forms based on information provided ie, exercise and supplements and 'more forms'
 - [ ] (optional) if a user un-clicks an optional form the data is saved if the user c it is being edited
 
 Issues Im running into
@@ -120,3 +120,5 @@ Issues: Data standards for micro-nutrients and macro-nutrients. Either cast a la
 ### Testing
 
 - [ ] test clerk user creation/deletion/update functionality
+- [ ] unit testing
+- [ ] form testing (need to learn how to do this one)

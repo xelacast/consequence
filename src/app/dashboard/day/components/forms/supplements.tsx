@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import TimePicker from "react-time-picker";
-import { useSupplements } from "~/lib/hooks/fetcher";
+import { useSupplements } from "~/lib/hooks/supplements";
 import { useEffect, useState } from "react";
 import type {
   createSupplementSchemaClient,

@@ -74,3 +74,21 @@ export const twentyFourHourClock = ({
 export const currentTime = (date?: string | Date | null) => {
   return dayjs(date).format("LT");
 };
+
+/**
+ *
+ * @param month values expected are 0-11. January starting at 0 and December ending at 11
+ * @description returns values of month +- 7 days to supply the calendar for the date picker with documented dates
+ * @returns date types in {start, end} object format
+ */
+export const getCalendarDocumentedDates = (month: number | null) => {
+  let currentMonth: dayjs.Dayjs;
+
+  if (month) currentMonth = dayjs().set("month", month);
+  else currentMonth = dayjs();
+
+  const start = currentMonth.startOf("month").subtract(7, "days").toDate();
+  const end = currentMonth.endOf("month").add(7, "days").toDate();
+
+  return { start, end };
+};

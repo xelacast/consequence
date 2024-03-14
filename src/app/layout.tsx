@@ -1,8 +1,8 @@
 import "~/styles/globals.css";
 import { Inter as FontSans } from "next/font/google";
-import { TRPCReactProvider } from "~/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { cn } from "~/lib/utils";
+import Providers from "./_helpers/providers";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,7 +29,7 @@ export default function RootLayout({
             fontSans.variable,
           )}
         >
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <Providers>{children}</Providers>
         </body>
       </html>
     </ClerkProvider>
