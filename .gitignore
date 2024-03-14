@@ -41,4 +41,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-./public/data
+/public/data
+
+/git-filter-repo.*
