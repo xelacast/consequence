@@ -33,7 +33,7 @@ export function DatePicker({ date }: { date: Date | string }) {
   const [month, setMonth] = React.useState(dayjs(date).toDate());
   const [dates, setDates] = React.useState<Date[]>([]);
 
-  const { data, isError, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["documentedDates", month, dates],
     queryFn: async () => {
       const response = await fetch(`/api/day?month=${dayjs(month).month()}`);
@@ -50,16 +50,12 @@ export function DatePicker({ date }: { date: Date | string }) {
       );
       setDates([...newDates, ...data.days.map((date) => new Date(date))]);
     }
-  }, [data]);
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const documentedStyle = {
     color: "black",
     backgroundColor: "#BDFFBE",
   };
-
-  // TODO override current day and selected day hovered day css format
-
-  // the calendar wont be dependant on the green how can we load this without spinning the calendar?
 
   return (
     <Popover>
