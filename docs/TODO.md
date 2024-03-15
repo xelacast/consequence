@@ -102,6 +102,23 @@ Users are shown more attributes to choose from for symptoms/descriptions
 - [x] Update forms show appropriate forms based on information provided ie, exercise and supplements and 'more forms'
 - [ ] (optional) if a user un-clicks an optional form the data is saved if the user c it is being edited
 
+March 14th, 2024
+
+- [ ] Remove all unused packages and switch fetches to react-query
+- [ ] Back fill supplement data in older dates
+- [ ] Review your code. What patterns do you like? What do you not like? What can you improve and how?
+- [ ] Get a features list together and have better organization with planning this software. What is the main purpose of building this software? How do the features importance align with that goal? (Data Visualization, Data metrics/appropriate data for metrics)
+- [ ] Architectural patterns. When to use enums? When to allow user inserted data to persist? AI tool to autocorrect user input? Database schema designs for the best interactions.
+- [ ] Map out what data and data points i need from the features. Symptoms (select and create new ones). Health Measurements (need guidelines on what is a 0 and what is a 10 or a tool to interpret their baseline?)
+
+- [ ] Reconfig fetch components
+      Components - [x] ConfiguredSupplements, (Create a hook bc its used in many places) - [ ]
+
+- [ ] Add loading states to components
+
+- [ ] Create configuration table for users when they are created or find a new way of implementing this
+- [ ] Learn how to use generics to make code more versatile
+
 Issues Im running into
 Schema planning was very poor
 Naming files the same names even if they are in different folders is hard to work with
@@ -122,3 +139,11 @@ Issues: Data standards for micro-nutrients and macro-nutrients. Either cast a la
 - [ ] test clerk user creation/deletion/update functionality
 - [ ] unit testing
 - [ ] form testing (need to learn how to do this one)
+
+Johns speech notes
+
+// left ride side dispoven?
+
+Danmaris Speech
+
+I agree the information age is being transformed into the creative age. New ideas spread greatness around the world and the entrance gap for creative endeavers is lowering for everyone. Great use of hand movements although

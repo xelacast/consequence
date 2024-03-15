@@ -62,8 +62,24 @@ export default async function createSupplement(
           },
         },
       },
+      select: {
+        id: true,
+        brand_name: true,
+        name: true,
+        serving_size: true,
+        serving_size_unit: true,
+        activated: true,
+        ingredients: {
+          select: {
+            name: true,
+            amount_per_serving: true,
+            amount_per_serving_unit: true,
+            daily_value: true,
+          },
+        },
+      },
     });
-    return { message: "supplement created", status: 200, id: supplement.id };
+    return { message: "supplement created", status: 200, data: supplement };
   } catch (err) {
     return { message: "could not create supplement", status: 500, error: err };
   }

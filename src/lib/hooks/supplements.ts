@@ -1,21 +1,18 @@
-import useSWR from "swr";
-import type { readSupplementSchema } from "../schemas/supplement";
-import type { z } from "zod";
+import type { ReadSupplementsType } from "~/app/dashboard/configure/supplements/page";
+import { useQuery } from "@tanstack/react-query";
 
-const fetcher = (url: string) =>
-  fetch(url, { method: "GET" }).then((res) => res.json());
-
-export function useSupplements(activated?: boolean) {
+export async function getSupplementsConfig(activated = true) {
   const url = "/api/supplements" + (activated ? "?activate=true" : "");
+  const response = await fetch(url, { method: "GET" });
+  if (!response.ok) throw new Error("Network response was not ok");
+  return response.json() as Promise<ReadSupplementsType>;
+}
 
-  const { data, error, isLoading } = useSWR<
-    z.infer<typeof readSupplementSchema>[],
-    Error
-  >(url, fetcher);
+export function useSupplements(activated = true) {
+  const response = useQuery({
+    queryKey: ["supplements", activated],
+    queryFn: async () => await getSupplementsConfig(activated),
+  });
 
-  return {
-    supplements: data,
-    isError: error,
-    isLoading,
-  };
+  return response;
 }

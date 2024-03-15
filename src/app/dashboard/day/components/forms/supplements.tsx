@@ -49,7 +49,8 @@ export const ConfiguredSupplements = () => {
   >(undefined); // reading configured supplements
 
   // read the supplements that are configured by the user
-  const { supplements, isError, isLoading } = useSupplements(true);
+  // TODO Replace with react query
+  const { data: supplements, isError, isLoading } = useSupplements(true);
 
   // used to fill out the form appropriately
   const { append, remove, fields } = useFieldArray({
@@ -92,7 +93,7 @@ export const ConfiguredSupplements = () => {
       consumed_amount,
       time,
       supplement: { ...a },
-      supplements_id: undefined,
+      supplements_id: undefined, // this field is for updating the supplements
     });
 
     form.setValue("supplements.id", undefined);
@@ -172,7 +173,7 @@ const SelectSupplement = ({
 }: {
   data?: z.infer<typeof readSupplementSchema>[];
   isLoading: boolean;
-  isError?: Error;
+  isError?: boolean;
 }) => {
   const form = useFormContext<z.infer<typeof daySchema>>();
 

@@ -36,6 +36,9 @@ const config = {
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },
+      transitionProperty: {
+        height: "height",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

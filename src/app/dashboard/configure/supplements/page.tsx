@@ -1,13 +1,14 @@
-"use client";
-
 import type { z } from "zod";
-import React, { useEffect, useState } from "react";
-import { useSupplements } from "~/lib/hooks/supplements";
+import React from "react";
 import type { readSupplementSchema } from "~/lib/schemas/supplement";
+import { ConfigureSupplements } from "./components/configureSupplement";
 import {
-  ConfigureSupplements,
-  ShowConfiguredSupplements,
-} from "./components/supplementparts";
+  QueryClient,
+  HydrationBoundary,
+  dehydrate,
+} from "@tanstack/react-query";
+import { getSupplementsConfig } from "~/lib/hooks/supplements";
+import { ShowConfiguredSupplements } from "./components/showSupplements";
 
 /**
  * Configure Supplements page
@@ -16,30 +17,20 @@ import {
  * @data can make this universal and pull supplements from a third party database or allow users to create there own. Or both?
  */
 
-export default function Page() {
-  const { supplements, isError, isLoading } = useSupplements();
-  const [activeSupplements, setActiveSupplements] = useState<
-    z.infer<typeof readSupplementSchema>[] | undefined
-  >(supplements);
+export default async function Page() {
+  const queryClient = new QueryClient();
 
-  // could I do this a different way?
-  useEffect(() => {
-    if (supplements) setActiveSupplements(supplements);
-  }, [supplements]);
+  await queryClient.prefetchQuery({
+    queryKey: ["supplements"],
+    queryFn: async () => await getSupplementsConfig(),
+  });
 
   return (
-    <div className="grid gap-2 md:grid-cols-3">
-      <ShowConfiguredSupplements
-        className="md:col-span-1 md:col-start-1"
-        supplements={activeSupplements}
-        isError={isError}
-        isLoading={isLoading}
-      />
-      <ConfigureSupplements
-        className="md:col-span-2 md:col-start-2"
-        setSupplements={setActiveSupplements}
-        supplements={activeSupplements}
-      />
+    <div className="grid h-[90vh] gap-4 md:grid-cols-5 lg:grid-cols-3">
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <ShowConfiguredSupplements className="rounded-md border p-4 shadow-lg md:col-span-2 md:col-start-1 lg:col-span-1 lg:col-start-1 " />
+      </HydrationBoundary>
+      <ConfigureSupplements className="rounded-md border p-4 shadow-lg md:col-span-4 md:col-start-3 lg:col-span-5 lg:col-start-2" />
     </div>
   );
 }
