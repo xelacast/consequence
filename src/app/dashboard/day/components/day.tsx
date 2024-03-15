@@ -24,7 +24,7 @@ import { cn } from "~/lib/utils";
 import { toCapitalize } from "~/lib/misc/useUpperCase";
 import { daySchema } from "~/lib/schemas/day";
 import { StressForm } from "~/app/dashboard/day/components/forms/stress";
-import { datePickerFormatter } from "~/lib/dates";
+import { datePickerFormatter } from "~/lib/misc/dates";
 
 /**
  * @param date: string YYYY-MM-DD format

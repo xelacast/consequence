@@ -31,7 +31,7 @@ import { toCapitalize } from "~/lib/misc/useUpperCase";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { SelectMeasurement } from "~/app/dashboard/configure/supplements/components/measurements";
 import { FormContainer } from "~/components/ui/formcontainer";
-import { datePickerFormatter } from "~/lib/dates";
+import { datePickerFormatter } from "~/lib/misc/dates";
 import { SupplementHoverCard } from "~/app/dashboard/configure/supplements/components/supplementHover";
 
 /**

@@ -12,7 +12,7 @@ import {
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
-import { datePickerFormatter } from "~/lib/dates";
+import { datePickerFormatter } from "~/lib/misc/dates";
 import { ReusableSelect } from "../reusableSelect";
 import type { DayType } from "../day";
 

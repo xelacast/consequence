@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs";
 import { db } from "~/server/db";
-import { currentDay } from "~/lib/dates";
+import { currentDay } from "~/lib/misc/dates";
 import { redirect } from "next/navigation";
 
 /**

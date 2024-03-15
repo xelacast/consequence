@@ -16,7 +16,7 @@ import Select from "react-select";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
-import dayjs from "~/lib/dates";
+import dayjs from "~/lib/misc/dates";
 
 const exerciseTypeOptions = Object.values(ExerciseType).map((type) => {
   return {

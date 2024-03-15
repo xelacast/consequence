@@ -3,7 +3,7 @@
 import { db } from "~/server/db";
 import { journalSchema } from "../schemas/journal";
 import type { z } from "zod";
-import { currentDate } from "../dates";
+import { currentDate } from "../misc/dates";
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs";
 

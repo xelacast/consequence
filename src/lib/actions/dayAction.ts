@@ -15,7 +15,7 @@ import {
 import { db } from "~/server/db";
 import { exerciseSchema } from "~/lib/schemas/day";
 import { type day } from "@prisma/client";
-import { currentDate } from "../dates";
+import { currentDate } from "../misc/dates";
 import { supplementsSchema } from "../schemas/supplement";
 
 const createDaySchema = z.object({

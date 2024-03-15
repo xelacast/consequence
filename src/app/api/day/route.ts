@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs";
 import type { NextRequest } from "next/server";
-import { getCalendarDocumentedDates } from "~/lib/dates";
+import { getCalendarDocumentedDates } from "~/lib/misc/dates";
 import { db } from "~/server/db";
 
 export async function GET(request: NextRequest) {

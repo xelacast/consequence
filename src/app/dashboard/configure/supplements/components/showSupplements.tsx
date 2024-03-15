@@ -9,8 +9,9 @@ import { updateSupplementActivation } from "~/lib/actions/supplementAction";
 import { toCapitalize } from "~/lib/misc/useUpperCase";
 import type { readSupplementSchema } from "~/lib/schemas/supplement";
 import { SupplementHoverCard as SHC } from "./supplementHover";
-import { useSupplements } from "~/lib/hooks/supplements";
+import { getSupplementsConfig, useSupplements } from "~/lib/hooks/supplements";
 import { Skeleton } from "~/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
 
 /**
  *
@@ -32,7 +33,15 @@ export const ShowConfiguredSupplements = ({
 }: {
   className?: string;
 }) => {
-  const { data: supplements, isError, isLoading } = useSupplements();
+  // NOTE: synrchonize with the mutation only works if they have the same query client. Using a hook requires extra steps to take
+  const {
+    data: supplements,
+    isError,
+    isLoading,
+  } = useQuery({
+    queryKey: ["supplements"],
+    queryFn: async () => await getSupplementsConfig(),
+  });
 
   if (isError) return <p>Error...</p>;
 

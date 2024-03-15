@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { CreateDayButton } from "../components/handlers";
 import { SupplementHoverCard } from "../../configure/supplements/components/supplementHover";
 import { toCapitalize } from "~/lib/misc/useUpperCase";
-import { currentTime } from "~/lib/dates";
+import { currentTime } from "~/lib/misc/dates";
 
 export default async function Page({ params }: { params: { date: string } }) {
   const { date } = params;
@@ -13,15 +13,17 @@ export default async function Page({ params }: { params: { date: string } }) {
     await readDayData(date);
 
   return (
-    <div className="container">
-      <DatePicker date={date} />
+    <div className="container mb-[10vh] flex flex-col gap-4">
+      <div className="flex justify-between">
+        <DatePicker date={date} />
+        <CreateDayButton dayId={id} date={date} />
+      </div>
       <SupplementContainer supplements={supplements} />
       <ExerciseContainer exercise={exercise} />
       <SleepContainer data={sleep} />
       <HealthContainer health={health} />
       <StressContainer stress={stress} />
       <FormMiscContainer form_misc={form_misc} />
-      <CreateDayButton dayId={id} date={date} />
     </div>
   );
 }
