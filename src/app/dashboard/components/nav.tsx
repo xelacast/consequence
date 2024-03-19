@@ -1,10 +1,6 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import {
-  NavigationMenuContent,
-  NavigationMenuTrigger,
-} from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 import React from "react";
 import {
@@ -12,38 +8,52 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuContent,
+  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "~/components/ui/navigation-menu";
 import { cn } from "~/lib/utils";
 
 export const Navigation = () => {
   return (
-    <NavigationMenu className="mr-auto">
+    <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
           <Link href="/dashboard" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink
+              className={navigationMenuTriggerStyle()}
+              href="/dashboard"
+            >
               Dashboard
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href="/dashboard/day" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink
+              className={navigationMenuTriggerStyle()}
+              href="/dashboard/day"
+            >
               Day
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href="/dashboard/journal" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink
+              className={navigationMenuTriggerStyle()}
+              href="/dashboard/journal"
+            >
               Journal
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href="/dashboard/feedback" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink
+              className={navigationMenuTriggerStyle()}
+              href="/dashboard/feedback"
+            >
               Feedback
             </NavigationMenuLink>
           </Link>
@@ -52,24 +62,14 @@ export const Navigation = () => {
           <NavigationMenuTrigger>Configure</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              <ListItem
-                title={"Supplements"}
-                href={"/dashboard/configure/supplements"}
-              >
-                Configure your supplements.
-              </ListItem>
-              {/* <ListItem title={"Meals"} href={"/dashboard/configure/meals"}>
-                Personalize your meals.
-              </ListItem> */}
+              <Link href="/dashboard/configure/supplements">
+                <h3 className="text-md font-medium leading-none">
+                  Supplements
+                </h3>
+                <p className="mt-1 text-sm">Configure your supplements.</p>
+              </Link>
             </ul>
           </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/dashboard/configure" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Configure
-            </NavigationMenuLink>
-          </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
