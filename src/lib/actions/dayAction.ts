@@ -136,11 +136,49 @@ export async function editDayAction(
           update: { where: { id: data.health.id }, data: data.health },
         },
         form_misc: { update: data.misc },
+
         // I want both Id's in here but the way I have the schema setup makes this difficult
       },
     });
   } catch (err) {
     return { error: "error", status: 500, message: "Internal Server Error" };
+  }
+
+  /**
+   * Update Exercise Section
+   */
+
+  if (data?.exercise) {
+    const { id, duration, fasted, intensity, time_of_day, type } =
+      data.exercise;
+    try {
+      if (!id) {
+        await db.exercise.create({
+          data: {
+            day_id: day.id,
+            duration,
+            fasted,
+            intensity,
+            time_of_day,
+            type,
+          },
+        });
+      } else {
+        await db.day.update({
+          where: { id: day.id },
+          data: {
+            exercise: {
+              update: {
+                where: { id: id },
+                data: { duration, fasted, intensity, time_of_day, type },
+              },
+            },
+          },
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   const supplements = await db.supplements.findMany({

@@ -28,7 +28,7 @@ export default async function Page() {
   return (
     <div className="grid h-[90vh] gap-4 md:grid-cols-5 lg:grid-cols-3">
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ShowConfiguredSupplements className="rounded-md border p-4 shadow-lg md:col-span-2 md:col-start-1 lg:col-span-1 lg:col-start-1 " />
+        <ShowConfiguredSupplements className="h-[50vh] rounded-md border p-4 shadow-lg md:col-span-2 md:col-start-1 md:h-auto lg:col-span-1 lg:col-start-1" />
       </HydrationBoundary>
       <ConfigureSupplements className="rounded-md border p-4 shadow-lg md:col-span-4 md:col-start-3 lg:col-span-5 lg:col-start-2" />
     </div>

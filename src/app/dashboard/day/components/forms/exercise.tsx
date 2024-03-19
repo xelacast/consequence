@@ -150,6 +150,7 @@ export const ExerciseFormV2 = () => {
                   form.setValue("exercise.time_of_day", time);
                   field.onChange(e);
                 }}
+                value={field.value ?? "00:00"}
               />
             </FormControl>
             <FormMessage />

@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import TimePicker from "react-time-picker";
-import { useSupplements } from "~/lib/hooks/supplements";
+import { getSupplementsConfig } from "~/lib/hooks/supplements";
 import { useEffect, useState } from "react";
 import type {
   createSupplementSchemaClient,
@@ -33,6 +33,7 @@ import { SelectMeasurement } from "~/app/dashboard/configure/supplements/compone
 import { FormContainer } from "~/components/ui/formcontainer";
 import { datePickerFormatter } from "~/lib/misc/dates";
 import { SupplementHoverCard } from "~/app/dashboard/configure/supplements/components/supplementHover";
+import { useQuery } from "@tanstack/react-query";
 
 /**
  *
@@ -46,11 +47,17 @@ export const ConfiguredSupplements = () => {
   // used to set the data for the supplements when its available
   const [data, setData] = useState<
     z.infer<typeof readSupplementSchema>[] | undefined
-  >(undefined); // reading configured supplements
+  >([]); // reading configured supplements
 
   // read the supplements that are configured by the user
-  // TODO Replace with react query
-  const { data: supplements, isError, isLoading } = useSupplements(true);
+  const {
+    data: supplements,
+    isError,
+    isLoading,
+  } = useQuery({
+    queryKey: ["supplements"],
+    queryFn: async () => await getSupplementsConfig(true),
+  });
 
   // used to fill out the form appropriately
   const { append, remove, fields } = useFieldArray({
@@ -133,7 +140,7 @@ export const SupplementHoverSelectCards = ({
   remove: (index: number) => void;
 }) => {
   return (
-    <ul>
+    <ul className="flex flex-col gap-2 overflow-hidden">
       {supplements?.map((field, index) => {
         return (
           <li key={field?.id}>
@@ -147,7 +154,7 @@ export const SupplementHoverSelectCards = ({
               }}
             >
               <Button
-                className="flex flex-grow gap-2 bg-gradient-to-tr from-blue-900 to-gray-700"
+                className="flex w-auto flex-grow gap-2 text-wrap bg-gradient-to-tr from-blue-900 to-gray-700"
                 type="button"
                 onClick={async () => {
                   remove(index);
@@ -196,12 +203,14 @@ const SelectSupplement = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {data?.map((supplement) => (
-                    <SelectItem value={supplement.id!} key={supplement.id}>
-                      <h5>{supplement.brand_name}</h5>
-                      <p>{supplement.name}</p>
-                    </SelectItem>
-                  ))}
+                  {data
+                    ? data?.map((supplement) => (
+                        <SelectItem value={supplement.id!} key={supplement.id}>
+                          <h5>{supplement.brand_name}</h5>
+                          <p>{supplement.name}</p>
+                        </SelectItem>
+                      ))
+                    : null}
                 </SelectGroup>
               </SelectContent>
             </SelectShad>

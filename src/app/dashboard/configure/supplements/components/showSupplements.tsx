@@ -9,7 +9,7 @@ import { updateSupplementActivation } from "~/lib/actions/supplementAction";
 import { toCapitalize } from "~/lib/misc/useUpperCase";
 import type { readSupplementSchema } from "~/lib/schemas/supplement";
 import { SupplementHoverCard as SHC } from "./supplementHover";
-import { getSupplementsConfig, useSupplements } from "~/lib/hooks/supplements";
+import { getSupplementsConfig } from "~/lib/hooks/supplements";
 import { Skeleton } from "~/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 

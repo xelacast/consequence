@@ -12,7 +12,6 @@ export function useSupplements(activated = true) {
   const response = useQuery({
     queryKey: ["supplements", activated],
     queryFn: async () => await getSupplementsConfig(activated),
-    enabled: true,
   });
 
   return response;

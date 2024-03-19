@@ -80,12 +80,12 @@ export const DayFormContainer = ({
 }) => {
   return (
     <DayProvider initialState={initialState}>
-      <div className="flex flex-row">
+      <div className="mb-[50px] flex flex-col gap-4 md:flex-row">
         <Form {...form}>
-          <FormsToAdd className="my-4 ml-4 basis-80 rounded-md border p-4 md:min-w-80" />
+          <FormsToAdd className="h-[10vh] rounded-md border p-4 md:mx-0 md:ml-0 md:h-auto md:min-w-40 md:basis-80" />
           <div className="w-auto basis-auto">
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="grid gap-4 p-4 md:grid-cols-2">
+              <div className="grid gap-4 lg:grid-cols-2">
                 <SleepFormV2 />
                 <HealthFormV2 />
                 <StressForm />

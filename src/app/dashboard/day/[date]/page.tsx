@@ -1,7 +1,6 @@
 import { readDayData } from "~/lib/data/day";
 import { DatePicker } from "../components/datePicker";
 import type { $Enums, ingredient } from "@prisma/client";
-import dayjs from "dayjs";
 import { CreateDayButton } from "../components/handlers";
 import { SupplementHoverCard } from "../../configure/supplements/components/supplementHover";
 import { toCapitalize } from "~/lib/misc/useUpperCase";
@@ -13,8 +12,8 @@ export default async function Page({ params }: { params: { date: string } }) {
     await readDayData(date);
 
   return (
-    <div className="container mb-[10vh] flex flex-col gap-4">
-      <div className="flex justify-between">
+    <div className="mb-[10vh] flex flex-col gap-4">
+      <div className="flex justify-between gap-2">
         <DatePicker date={date} />
         <CreateDayButton dayId={id} date={date} />
       </div>
@@ -31,7 +30,7 @@ export default async function Page({ params }: { params: { date: string } }) {
 const FormMiscContainer = ({ form_misc }: { form_misc: FormMisc }) => {
   return (
     <section className="rounded-lg border p-2">
-      <h2>Miscellaneous</h2>
+      <h2 className="text-lg font-medium">Miscellaneous</h2>
       <div>Meditation: {form_misc?.meditation ? "Yes" : "No"}</div>
       <div>
         Intermittent Fasting: {form_misc?.intermittent_fasting ? "Yes" : "No"}
@@ -65,19 +64,15 @@ export type Stress =
 const StressContainer = ({ stress }: { stress: Stress }) => {
   return (
     <section className="rounded-lg border p-2">
-      <h2>Stress</h2>
+      <h2 className="text-lg font-medium">Stress</h2>
       {stress?.map((s) => (
         <div key={s.id}>
           <div>Rating: {s.rating}</div>
+          <div>Time of Day: {currentTime(s?.time_of_day)}</div>
           <div>
-            Time of Day:{" "}
-            {dayjs(s.time_of_day).format("YYYY-MM-DDTHH:mm:ssZ[Z]")}
+            Symptoms:
+            <MapItems list={s.symptoms} />
           </div>
-          <div>
-            Symptoms:{" "}
-            {s.symptoms.map((sym) => <span key={sym}>{sym}</span>) ?? "N/A"}
-          </div>
-          <div>Notes: {s.notes ?? "N/A"}</div>
         </div>
       ))}
     </section>
@@ -99,7 +94,7 @@ export type Health =
 const HealthContainer = ({ health }: { health: Health }) => {
   return (
     <section className="rounded-lg border p-2">
-      <h2>Health</h2>
+      <h2 className="text-lg font-medium">Health</h2>
       {health?.map((h) => (
         <div key={h.id}>
           <div>Notes: {h?.notes ?? "N/A"}</div>
@@ -108,19 +103,27 @@ const HealthContainer = ({ health }: { health: Health }) => {
           <div>Mental Health: {h?.mental_health ?? "N/A"}</div>
           <div>
             Physical Health Description:{" "}
-            {h?.physical_health_description.map((desc) => (
-              <span key={desc}>{desc}</span>
-            )) ?? "N/A"}
+            <MapItems list={h?.physical_health_description} />
           </div>
           <div>
             Mental Health Description:{" "}
-            {h?.mental_health_description.map((desc) => (
-              <span key={desc}>{desc}</span>
-            )) ?? "N/A"}
+            <MapItems list={h?.mental_health_description} />
           </div>
         </div>
       ))}
     </section>
+  );
+};
+
+const MapItems = ({ list }: { list: string[] }) => {
+  return (
+    <ul className="ml-2">
+      {list.map((desc) => (
+        <li key={desc}>
+          <span key={desc}>{desc.split("_").join(" ")}</span>
+        </li>
+      )) ?? "N/A"}
+    </ul>
   );
 };
 
@@ -137,7 +140,7 @@ export type Sleep =
 const SleepContainer = ({ data }: { data: Sleep }) => {
   return (
     <section className="rounded-lg border p-2">
-      <h3>Sleep</h3>
+      <h2 className="text-lg font-medium">Sleep</h2>
       <div>Hours: {data?.hours ?? "N/A"}</div>
       <div>Quality: {data?.quality ?? "N/A"}</div>
       <div>Notes: {data?.notes ?? "N/A"}</div>
@@ -157,15 +160,12 @@ export type Exercise = {
 const ExerciseContainer = ({ exercise }: { exercise: Exercise }) => {
   return (
     <section className="rounded-lg border p-2">
-      <h3>Exercise</h3>
+      <h3 className="text-lg font-medium">Exercise</h3>
       {exercise?.map((ex) => (
         <div key={ex.id}>
           <div>Type: {ex?.type ?? "N/A"}</div>
           <div>Duration: {ex?.duration ? ex.duration + " Min" : "N/A"}</div>
-          <div>
-            Time of Day:{" "}
-            {dayjs(ex?.time_of_day).format("YYYY-MM-DDTHH:mm:ssZ[Z]")}
-          </div>
+          <div>Time of Day: {currentTime(ex?.time_of_day) ?? ""}</div>
           <div>Intensity: {ex?.intensity}</div>
           <div>Fasted: {ex?.fasted ? "Yes" : "No"}</div>
         </div>
@@ -201,7 +201,7 @@ const SupplementContainer = ({ supplements }: { supplements: Supplements }) => {
   return (
     <section>
       <div className="rounded-lg border p-2">
-        <h3>Supplements</h3>
+        <h2 className="text-lg font-medium">Supplements</h2>
         <ul className="wrap flex flex-row flex-wrap gap-2">
           {supplements?.map((field) => (
             <li key={field.id} className="basis-full md:basis-auto">

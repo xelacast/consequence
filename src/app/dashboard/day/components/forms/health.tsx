@@ -139,7 +139,7 @@ export const HealthFormV2 = () => {
         name="health.physical_health_description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Quality</FormLabel>
+            <FormLabel>Physical Health Quality</FormLabel>
             <FormControl>
               <ReusableSelect
                 defaultValue={field.value?.map((c) => ({
@@ -152,7 +152,7 @@ export const HealthFormV2 = () => {
                   field.onChange(e.map((c: { value: string }) => c.value))
                 }
                 isMulti
-                placeholder="Sleep Quality"
+                placeholder="Physical Quality"
               />
             </FormControl>
             <FormMessage />

@@ -11,6 +11,7 @@ import { ExerciseFormV2 } from "~/app/dashboard/day/components/forms/exercise";
 import { editDayAction } from "~/lib/actions/dayAction";
 import type { Supplements } from "~/lib/types/supplements";
 import type { Node } from "~/lib/state/dayContext";
+import { useMemo } from "react";
 
 type Exercise = {
   type?: $Enums.ExerciseType;
@@ -97,7 +98,7 @@ export default function UpdateDay({
               })),
             }
           : { toggle: false },
-      exercise: exercise[0] ?? undefined,
+      exercise: { ...exercise[0], toggle: true } ?? undefined,
       // this is a hack. I need to find a better way to do this
       misc: form_misc,
       health,
@@ -128,10 +129,8 @@ export default function UpdateDay({
     await editDayAction(updateData, date);
   };
 
-  const formInitState = useFormNodes({
-    supplements: supplements.length,
-    exercise: exercise.length,
-  });
+  // I dont think this is necessary
+  const formInitState = useFormNodes(supplements.length, exercise.length);
 
   return (
     <DayFormContainer
@@ -142,7 +141,7 @@ export default function UpdateDay({
   );
 }
 
-const useFormNodes = ({
+const getFormNodes = ({
   supplements,
   exercise,
 }: {
@@ -151,6 +150,12 @@ const useFormNodes = ({
 }) => {
   const output: Node[] = [];
   if (supplements > 0) output.push(ConfiguredSupplements);
-  if (exercise) output.push(ExerciseFormV2);
+  if (exercise > 0) output.push(ExerciseFormV2);
   return output;
+};
+
+const useFormNodes = (supplements: number, exercise: number) => {
+  return useMemo(() => {
+    return getFormNodes({ supplements, exercise });
+  }, [supplements, exercise]);
 };

@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { journal } from "@prisma/client";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import {
   type UseFormReturn,
   useFieldArray,
@@ -66,7 +66,7 @@ export function JournalContainer({ entries }: { entries: journal[] }) {
     form.setValue(`entries.${fields.length}.id`, id);
   };
   return (
-    <Fragment>
+    <div className="mb-[10vh]">
       <JournalEntries form={form} update={update} />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -76,7 +76,7 @@ export function JournalContainer({ entries }: { entries: journal[] }) {
               <FormItem>
                 <FormLabel>Entry</FormLabel>
                 <FormControl>
-                  <Textarea {...field} />
+                  <Textarea {...field} className="h-[25vh]" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -87,7 +87,7 @@ export function JournalContainer({ entries }: { entries: journal[] }) {
           </Button>
         </form>
       </Form>
-    </Fragment>
+    </div>
   );
 }
 

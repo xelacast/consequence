@@ -7,8 +7,7 @@ const Page = async ({ params }: { params: { date: string } }) => {
   const { supplements, id, exercise, form_misc, health, sleep, stress } =
     await readDayDataForEdit(date);
 
-  console.log(exercise);
-  // can I resuse the day form and make default values but send it to an update???
+  // can I reuse the day form and make default values but send it to an update???
   // how can I detect which fields are being updated? and then trigger only those fields?
   // ? Should I parse the data with the daySchema?
 
@@ -18,7 +17,7 @@ const Page = async ({ params }: { params: { date: string } }) => {
       id={id}
       supplements={supplements}
       // @ts-expect-error look below
-      exercise={exercise} // errors in config string != "low" | "medium" | "high" schema is set this way but the dat coming from the zod schema is just a string. Alter this in the data pull
+      exercise={exercise} // errors in config string != "low" | "medium" | "high" schema
       form_misc={form_misc}
       health={health}
       sleep={sleep}

@@ -18,7 +18,7 @@ export const Navigation = () => {
   return (
     <NavigationMenu>
       <NavigationMenuList>
-        <NavigationMenuItem>
+        {/* <NavigationMenuItem>
           <Link href="/dashboard" legacyBehavior passHref>
             <NavigationMenuLink
               className={navigationMenuTriggerStyle()}
@@ -27,7 +27,7 @@ export const Navigation = () => {
               Dashboard
             </NavigationMenuLink>
           </Link>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
         <NavigationMenuItem>
           <Link href="/dashboard/day" legacyBehavior passHref>
             <NavigationMenuLink
@@ -48,7 +48,7 @@ export const Navigation = () => {
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
-        <NavigationMenuItem>
+        {/* <NavigationMenuItem>
           <Link href="/dashboard/feedback" legacyBehavior passHref>
             <NavigationMenuLink
               className={navigationMenuTriggerStyle()}
@@ -57,17 +57,17 @@ export const Navigation = () => {
               Feedback
             </NavigationMenuLink>
           </Link>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
         <NavigationMenuItem>
           <NavigationMenuTrigger>Configure</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              <Link href="/dashboard/configure/supplements">
-                <h3 className="text-md font-medium leading-none">
-                  Supplements
-                </h3>
-                <p className="mt-1 text-sm">Configure your supplements.</p>
-              </Link>
+            <ul className="mx-2 grid w-[350px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+              <ListItem
+                title="Supplements"
+                href="/dashboard/configure/supplements "
+              >
+                Configure supplements you use
+              </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -97,8 +97,6 @@ const ListItem = React.forwardRef<
     <li>
       <NavigationMenuLink asChild>
         <Link
-          passHref
-          legacyBehavior
           href={props.href!}
           ref={ref}
           className={cn(
@@ -107,12 +105,10 @@ const ListItem = React.forwardRef<
           )}
           {...props}
         >
-          <a>
-            <div className="text-sm font-medium leading-none">{title}</div>
-            <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
-              {children}
-            </p>
-          </a>
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
+            {children}
+          </p>
         </Link>
       </NavigationMenuLink>
     </li>
