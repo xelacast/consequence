@@ -122,3 +122,16 @@ I want to provide real facts from credible sources. There is a "normal" level fo
 - [ ] Sleep tracker from an integrated electronic device and sleep quality from the perspective of the person, ie user input.
 
 This application can be used along side doctors to help them help their patients by adding more data/information to their doctor visits. Not all patients are going to keep a track record of their symptoms unless it means the world to get themselves fixed. Digitize this service.
+
+### Nutrient Ideas
+
+Cronometer is dandy and all but the nutrients are not customizable to your body weight and exercise or ethnicity
+
+I want to track all nutrients under the sun that are relevant to our humanly food intake. I want to create m
+
+I want the forms to be modular and update on the same page they were created on
+Top row is a list of main nutrients, ie fiber, protein, fat, sugar, carbs or the users highlighted nutrients
+Underneath is shows the general, vitamins, carbohydrates, lipids, minerals, and proteins/amino acids
+
+I want to be able to take vitals blood pressure, blood glucose, etc and biometrics
+Track fasting with a timer.

@@ -20,6 +20,7 @@ Make each form modular. Have the designs as schema/form => action => CRUD DB
 Feb 14th, 2024
 
 - [ ] Coding design: Make the boiler plate for the input component reusable. This will save hundreds of lines of code and a lot of copy pasta
+      edit the above is a bit tedius. I am learning generics and how to use them but it has been combersome to use on top of react-hook-form (march 14th, 2024)
 - Supplements
   - [x] Make amount type choosable with mcg and mg
   - [x] Make Time Taken a clock
@@ -70,6 +71,8 @@ March 1st
 
 Users are shown more attributes to choose from for symptoms/descriptions
 
+!important I need better data points. The data I am using right now isn't that descriptive and is lacking
+
 - [ ] Mental Health
 - [ ] Physical Health
 - [ ] Stress
@@ -93,19 +96,19 @@ Users are shown more attributes to choose from for symptoms/descriptions
 - [x] Update edit and edit action
 - [x] update create action
       Security for supplementation configuration
-- [ ] Add time stamp to chosen supplement
+- [ ] Add time stamp to chosen supplement (UI)
 - [x] Update read action for supplements
 - [ ] Plan your features out appropriately so changes aren't so cumbersome and you can reuse components. I need designs and a laundry list of features to plan from
 - [ ] DO better schema planning. Everything is a fucking mess. WRITE DOWN A DEPENDENCY GRAPH
-- [ ] Reuse components so you stay D.R.Y
-- [ ] Backfill data from supplements
+- [x] Reuse components so you stay D.R.Y
+- [x] Backfill data from supplements
 - [x] Update forms show appropriate forms based on information provided ie, exercise and supplements and 'more forms'
 - [ ] (optional) if a user un-clicks an optional form the data is saved if the user c it is being edited
 
 March 14th, 2024
 
 - [x] Remove all unused packages and switch fetches to react-query
-- [ ] Back fill supplement data in older dates
+- [x] Back fill supplement data in older dates
 - [ ] Review your code. What patterns do you like? What do you not like? What can you improve and how?
 - [ ] Get a features list together and have better organization with planning this software. What is the main purpose of building this software? How do the features importance align with that goal? (Data Visualization, Data metrics/appropriate data for metrics)
 - [ ] Architectural patterns. When to use enums? When to allow user inserted data to persist? AI tool to autocorrect user input? Database schema designs for the best interactions.
@@ -140,10 +143,9 @@ Issues: Data standards for micro-nutrients and macro-nutrients. Either cast a la
 - [ ] unit testing
 - [ ] form testing (need to learn how to do this one)
 
-Johns speech notes
+# Idea
 
-// left ride side dispoven?
-
-Danmaris Speech
-
-I agree the information age is being transformed into the creative age. New ideas spread greatness around the world and the entrance gap for creative endeavers is lowering for everyone. Great use of hand movements although
+An app to track travel expenses with a group
+You create a group and add people to the group. The person who pays adds their receipts to the group. AI tracks it for users to claim what they bought from that receipt.
+Make an easy way to pay back friends/family from traveling/going out.
+Itemization to tax payout to tip payout.
