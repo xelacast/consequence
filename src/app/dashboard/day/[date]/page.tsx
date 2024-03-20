@@ -18,18 +18,20 @@ export default async function Page({ params }: { params: { date: string } }) {
         <CreateDayButton dayId={id} date={date} />
       </div>
       <SupplementContainer supplements={supplements} />
-      <ExerciseContainer exercise={exercise} />
-      <SleepContainer data={sleep} />
-      <HealthContainer health={health} />
-      <StressContainer stress={stress} />
-      <FormMiscContainer form_misc={form_misc} />
+      <div className="grid gap-4 md:grid-cols-2">
+        <ExerciseContainer exercise={exercise} />
+        <SleepContainer data={sleep} />
+        <HealthContainer health={health} />
+        <StressContainer stress={stress} />
+        <FormMiscContainer form_misc={form_misc} />
+      </div>
     </div>
   );
 }
 
 const FormMiscContainer = ({ form_misc }: { form_misc: FormMisc }) => {
   return (
-    <section className="rounded-lg border p-2">
+    <section className="rounded-lg border p-2 p-4">
       <h2 className="text-lg font-medium">Miscellaneous</h2>
       <div>Meditation: {form_misc?.meditation ? "Yes" : "No"}</div>
       <div>
@@ -63,7 +65,7 @@ export type Stress =
 
 const StressContainer = ({ stress }: { stress: Stress }) => {
   return (
-    <section className="rounded-lg border p-2">
+    <section className="rounded-lg border p-2 p-4">
       <h2 className="text-lg font-medium">Stress</h2>
       {stress?.map((s) => (
         <div key={s.id}>
@@ -72,6 +74,9 @@ const StressContainer = ({ stress }: { stress: Stress }) => {
           <div>
             Symptoms:
             <MapItems list={s.symptoms} />
+          </div>
+          <div>
+            <p>{s?.notes}</p>
           </div>
         </div>
       ))}
@@ -93,7 +98,7 @@ export type Health =
 
 const HealthContainer = ({ health }: { health: Health }) => {
   return (
-    <section className="rounded-lg border p-2">
+    <section className="rounded-lg border p-2 p-4">
       <h2 className="text-lg font-medium">Health</h2>
       {health?.map((h) => (
         <div key={h.id}>
@@ -139,7 +144,7 @@ export type Sleep =
 
 const SleepContainer = ({ data }: { data: Sleep }) => {
   return (
-    <section className="rounded-lg border p-2">
+    <section className="rounded-lg border p-2 p-4">
       <h2 className="text-lg font-medium">Sleep</h2>
       <div>Hours: {data?.hours ?? "N/A"}</div>
       <div>Quality: {data?.quality ?? "N/A"}</div>
@@ -159,7 +164,7 @@ export type Exercise = {
 
 const ExerciseContainer = ({ exercise }: { exercise: Exercise }) => {
   return (
-    <section className="rounded-lg border p-2">
+    <section className="rounded-lg border p-2 p-4">
       <h3 className="text-lg font-medium">Exercise</h3>
       {exercise?.map((ex) => (
         <div key={ex.id}>
@@ -200,7 +205,7 @@ export type Supplements = {
 const SupplementContainer = ({ supplements }: { supplements: Supplements }) => {
   return (
     <section>
-      <div className="rounded-lg border p-2">
+      <div className="rounded-lg border p-4">
         <h2 className="text-lg font-medium">Supplements</h2>
         <ul className="wrap flex flex-row flex-wrap gap-2">
           {supplements?.map((field) => (
