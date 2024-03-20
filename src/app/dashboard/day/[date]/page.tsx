@@ -18,7 +18,7 @@ export default async function Page({ params }: { params: { date: string } }) {
         <CreateDayButton dayId={id} date={date} />
       </div>
       <SupplementContainer supplements={supplements} />
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <ExerciseContainer exercise={exercise} />
         <SleepContainer data={sleep} />
         <HealthContainer health={health} />
