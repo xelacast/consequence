@@ -36,7 +36,7 @@ export const SupplementHoverCard = ({
   children: React.ReactNode;
 }) => {
   return (
-    <HoverCard openDelay={1000} closeDelay={50}>
+    <HoverCard openDelay={100} closeDelay={50}>
       <HoverCardTrigger>{children}</HoverCardTrigger>
       <HoverCardContent className="w-[400px]">
         <SupplementFactsTable ingredients={supplement?.ingredients} />
