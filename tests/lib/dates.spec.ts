@@ -5,7 +5,7 @@ import {
   currentTime,
   datePickerFormatter,
   getCalendarDocumentedDates,
-} from "../../lib/misc/dates";
+} from "~/lib/misc/dates";
 
 test("gets current date", () => {
   const date = currentDate("12-15-2021");

@@ -1,7 +1,7 @@
 import { test, describe, expect } from "vitest";
 
-import { addCommasToNumber } from "../../lib/misc/addComma";
-import { toCapitalize } from "../../lib/misc/useUpperCase";
+import { addCommasToNumber } from "~/lib/misc/addComma";
+import { toCapitalize } from "~/lib/misc/useUpperCase";
 
 describe("misc", () => {
   test("Add commas to numbers", () => {
