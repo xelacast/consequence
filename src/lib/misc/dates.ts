@@ -54,18 +54,6 @@ export const currentDate = (date?: string | Date) => {
   return dayjs(date).toDate();
 };
 
-export const twentyFourHourClock = ({
-  time,
-}: {
-  time?: Date | string | null;
-}) => {
-  const date = dayjs(time);
-  const minutes = date.minute();
-  const hours = date.hour();
-
-  return `${hours}:${minutes}`;
-};
-
 /**
  *
  * @param date objects
@@ -78,17 +66,23 @@ export const currentTime = (date?: string | Date | null) => {
 /**
  *
  * @param month values expected are 0-11. January starting at 0 and December ending at 11
- * @description returns values of month +- 7 days to supply the calendar for the date picker with documented dates
- * @returns date types in {start, end} object format
+ * @description returns values of month +- 1 month to supply the calendar for the date picker with documented dates. For perceived performance and rendering.
+ * @returns date types in {start, end} object format we care about the day month and year.
+ * @questions What about daylight savings? Don't use time in the date object
  */
-export const getCalendarDocumentedDates = (month: number | null) => {
+export const getCalendarDocumentedDates = (
+  month?: number | null,
+  year?: number | null,
+) => {
   let currentMonth: dayjs.Dayjs;
 
-  if (month) currentMonth = dayjs().set("month", month);
+  if (month && year)
+    currentMonth = dayjs().set("month", month).set("year", year);
+  else if (month) currentMonth = dayjs().set("month", month);
   else currentMonth = dayjs();
 
-  const start = currentMonth.startOf("month").subtract(7, "days").toDate();
-  const end = currentMonth.endOf("month").add(7, "days").toDate();
+  const start = currentMonth.startOf("month").subtract(1, "month").toDate();
+  const end = currentMonth.endOf("month").add(1, "month").toDate();
 
   return { start, end };
 };
