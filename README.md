@@ -36,7 +36,7 @@ cp .env.example .env
 
 #### Required api keys
 
-NOTE: Insert clerk KEYs, activate DB, and turn on development environment before you create your first account on the clerk dashboard. The app will be waiting for a signal from clerks websocket connection to mirror the clerk account in the db.
+NOTE: Insert clerk KEYs, activate DB, and turn on development environment before you create your first account on the clerk dashboard. The app will be waiting for a signal from clerks websocket connection to sync clerk users to the db.
 
 2nd NOTE:
 
