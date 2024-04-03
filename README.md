@@ -43,6 +43,7 @@ NOTE: Insert clerk KEYs, activate DB, and turn on development environment before
 - You will need to create an account and setup a free app. The first two keys are in the left side nav <em>Developers - API Keys</em>.
 - You must create a clerk webhook endpoint and paste the Signing Secret to the WEBHOOK_SECRET. (see localtunnel below for the correct url)
 
+
 - [Clerk](https://clerk.com/)
   - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
   - CLERK_SECRET_KEY
