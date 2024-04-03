@@ -1,17 +1,8 @@
-export default async function Home() {
-  // Need form action
-  const createDay = async (formData: FormData) => {
-    "use server";
-    console.log(formData);
-  };
-  // Create a form
+import { redirect } from "next/navigation";
 
+export default function Home() {
+  redirect("/dashboard/day");
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center ">
-      <form action={createDay}>
-        <div id="supplements"></div>
-        <input type="submit" value="Submit" />
-      </form>
-    </main>
+    <main className="flex min-h-screen flex-col items-center justify-center "></main>
   );
 }

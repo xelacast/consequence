@@ -20,9 +20,9 @@ Make each form modular. Have the designs as schema/form => action => CRUD DB
 Feb 14th, 2024
 
 - [ ] Coding design: Make the boiler plate for the input component reusable. This will save hundreds of lines of code and a lot of copy pasta
-      edit the above is a bit tedius. I am learning generics and how to use them but it has been combersome to use on top of react-hook-form (march 14th, 2024)
+      edit the above is a bit tedious. I am learning generics and how to use them but it has been cumbersome to use on top of react-hook-form (march 14th, 2024)
 - Supplements
-  - [x] Make amount type choosable with mcg and mg
+  - [x] Make amount type able to be chosen or selected with mcg and mg
   - [x] Make Time Taken a clock
 - Stress
   - [x] Add stress as a category for measuring
@@ -53,7 +53,7 @@ Feb 14th, 2024
 - [x] Users are required to fill out health, stress, and sleep. These are three things that anybody can describe at a given moment of the day.
 
 - Features
-  -- These components will be highly dependent of eachother. Exactly the same almost
+  -- These components will be highly dependent of each other. Exactly the same almost
 - [ ] Users can have multiple entries for stress
 - [ ] Users can have multiple entries for health
 
@@ -113,6 +113,7 @@ March 14th, 2024
 - [ ] Get a features list together and have better organization with planning this software. What is the main purpose of building this software? How do the features importance align with that goal? (Data Visualization, Data metrics/appropriate data for metrics)
 - [ ] Architectural patterns. When to use enums? When to allow user inserted data to persist? AI tool to autocorrect user input? Database schema designs for the best interactions.
 - [ ] Map out what data and data points i need from the features. Symptoms (select and create new ones). Health Measurements (need guidelines on what is a 0 and what is a 10 or a tool to interpret their baseline?)
+- [ ] Learn more about enums and if its a good idea to use them as I am.
 
 - [x] Re-config fetch components
       Components - [x] ConfiguredSupplements, (Create a hook bc its used in many places)
@@ -123,12 +124,13 @@ March 14th, 2024
 - [ ] Learn how to use generics to make code more versatile
 
 Issues Im running into
-Schema planning was very poor
-Naming files the same names even if they are in different folders is hard to work with
-FUcking A undefined objects
-Over engineering ts types
-type bloat (not having a single source of truth)... fuck me
-Making one big form for everything has made developing modular parts more problematic than it should've been
+
+- Schema planning was very poor
+- Naming files the same names even if they are in different folders is hard to work with
+- Undefined objects (bug)
+- Over engineering ts types
+- Type bloat (not having a single source of truth)...
+- Making one big form for everything has made developing modular parts more problematic than it should've been
 
 - [ ] Rate limiting
 - [x] Form validation and max lengths
