@@ -100,3 +100,5 @@ https://github.com/xelacast/consequence/assets/63383168/36297d0e-ec59-4f45-93a1-
 The notes section are notes of my ideas. Unfortunately There is no documentation on components and systems yet
 
 ## 🤝 Contributing
+
+Feel free to contribute as you want. Guidelines on contributions are being built will be uploaded asap.
