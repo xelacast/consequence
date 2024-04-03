@@ -76,9 +76,7 @@ At this time you will see a login screen.
 
 - Calendar that shows green for days you have inputted.
 
-<video width="320" height="240" controls>
-  <source src="https://github.com/xelacast/consequence/assets/63383168/68962696-d43a-41fd-9603-d2347edda98a" type="video/mov"/>
-</video>
+https://github.com/xelacast/consequence/assets/63383168/68962696-d43a-41fd-9603-d2347edda98a
 
 - Supplement Configuration/Creation
   - Creation
