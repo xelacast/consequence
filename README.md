@@ -58,7 +58,7 @@ This will create and run a postgreSQL db in docker with a container name of web-
 ./start-database.sh
 ```
 
-(optional) You can also use docker desktop or start to start the server or docker stop to stop server
+(optional) You can also use docker desktop or docker cli to start the server or docker stop to stop server
 
 ```bash
 docker start web-postgres
