@@ -42,7 +42,7 @@ Supplement tracking for physical and mental health. Future updates turn it into 
 - [ ] Users will fill out an onboarding process and the AI will "build" their portfolio/dashboard according to the information they filled out.
 - [ ] Users can take a picture of their dish/meal to have a model predict/equate the nutrients and foods.
 
-#### Life coach
+#### RAG implementation / AI Coach
 
 - [ ] Users can talk with a chat bot to get feedback on their lives
       What system would I have in play? I would need a overarching direction to guide the users in. This would allow them to give the best information for the best response of the life coach.
@@ -50,11 +50,11 @@ Supplement tracking for physical and mental health. Future updates turn it into 
 - [ ] Chat bot is connected to all of the users data and only the users data.
       Data will never be collected to interfere with the users daily life.
 
-### Stat Tracking (Gameification)
+### Stat Tracking (Gamification)
 
 Users can view a spider graph of mental health, physical health, stress, and other categories that fi in the top 5 categories for life and wellness. They can also see micro/macro nutrients, weight, and activity level.
 
-I would love to gamify this and have a personal stat card to view for yourself and maybe show others? I don't know if showing other people would be beneficial/usable.
+I would love to make this like a game and have a personal stat card to view for yourself and maybe show others? I don't know if showing other people would be beneficial/usable.
 
 - [ ] Users can link third party applications/apis to integrate their data from other apps. (loom, apple health, etc)
 
@@ -135,3 +135,13 @@ Underneath is shows the general, vitamins, carbohydrates, lipids, minerals, and 
 
 I want to be able to take vitals blood pressure, blood glucose, etc and biometrics
 Track fasting with a timer.
+
+### README Description Ideas
+
+#### Idea 1
+
+There are several mental health, nutrient and goal tracking apps on the web, but none of them were made by me all of them have horrible customer support and they're outdated. I didn't want to pay for them and I wanted my data on my own platform. I plan on giving a twist to this application with AI, not as the main component but as a way to leverage the data I have personally inputted into my own database.
+
+My goal is to track my nutrients and symptoms and emotions along with journal queries to correlate with what I am consuming and how it is affecting my body and mental state. Consequences. Every action has a cause and an effect. These consequences are affecting my life. There have been too many days where my brain feels off because my stomach is not agreeing with something I ate.
+
+My goal is to implement knowledge graph connections with llms to show the correlations of what is affecting me. I hope to get this tool to other peoples hands after I have made progress with it truly helping me. _remove this and the prior sentence_ I am interested in web development and AI. The utility that is coming from LLM is amazing and the future will hold truth to better outcomes and diagnosis of patients.
