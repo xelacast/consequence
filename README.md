@@ -25,7 +25,7 @@ git clone git@github.com:xelacast/consequence.git
 ### Update the .env
 
 ```bash
-cp env.example .env
+cp .env.example .env
 ```
 
 #### Required api keys
