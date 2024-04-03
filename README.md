@@ -75,9 +75,6 @@ At this time you will see a login screen.
 ### Features
 
 - Calendar that shows green for days you have inputted.
-
-https://github.com/xelacast/consequence/assets/63383168/68962696-d43a-41fd-9603-d2347edda98a
-
 - Supplement Configuration/Creation
   - Creation
   - Toggle: Toggle on and off supplements to declutter form. (issue #1)
@@ -86,6 +83,17 @@ https://github.com/xelacast/consequence/assets/63383168/68962696-d43a-41fd-9603-
   - Exercise and Supplements are optional
   - Future update will modularize the form. Monolithic form is a chore to work with and use.
 - Journaling Page
+- Mobile Friendly
+
+https://github.com/xelacast/consequence/assets/63383168/68962696-d43a-41fd-9603-d2347edda98a
+
+https://github.com/xelacast/consequence/assets/63383168/57d5ef99-2e9d-47bd-bf6c-76024cfc3866
+
+https://github.com/xelacast/consequence/assets/63383168/74b0e5fe-5a8d-4294-8a9b-9158c95c4684
+
+https://github.com/xelacast/consequence/assets/63383168/12522527-b2d8-42f6-b6f3-ce873e46bafa
+
+https://github.com/xelacast/consequence/assets/63383168/36297d0e-ec59-4f45-93a1-7aaf87eef1fd
 
 ### App Architecture
 
