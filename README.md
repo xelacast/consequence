@@ -16,6 +16,12 @@ I have experienced abdominal discomfort for many years and have been taking note
 
 ## ⚙️ Quick Start
 
+### Requirements
+
+- Node v18+ (locally running on v21.6.1)
+- Docker
+- pnpm
+
 ### Clone the repo
 
 ```bash
@@ -32,7 +38,10 @@ cp env.example .env
 
 NOTE: Insert clerk KEYs, activate DB, and turn on development environment before you create your first account on the clerk dashboard. The app will be waiting for a signal from clerks websocket connection to mirror the clerk account in the db.
 
-2nd NOTE: You will need to create an account and setup a free app. The first two keys are in the left side nav <em>Developers - API Keys</em>. You must create a webhook endpoint and paste the Signing Secret to the WEBHOOK_SECRET.
+2nd NOTE:
+
+- You will need to create an account and setup a free app. The first two keys are in the left side nav <em>Developers - API Keys</em>.
+- You must create a clerk webhook endpoint and paste the Signing Secret to the WEBHOOK_SECRET. (see localtunnel below for the correct url)
 
 - [Clerk](https://clerk.com/)
   - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
@@ -40,28 +49,45 @@ NOTE: Insert clerk KEYs, activate DB, and turn on development environment before
   - WEBHOOK_SECRET
 - DATABASE_URL
 
-### Create DB in docker
+### Create DB in docker and run container
+
+This will create and run a postgreSQL db in docker with a container name of web-postgres
 
 ```bash
 ./start-database.sh
 ```
 
-### Start Development Environment
+(optional) You can also use docker desktop or start to start the server or docker stop to stop server
 
 ```bash
-pnpm db:push && pnpm dev
+docker start web-postgres
 ```
 
-and travel to `http://localhost:3000/dashboard/day`
+### Start Development Environment on port 3000
 
-At this time you will see a login screen.
+```bash
+pnpm i && pnpm db:push && pnpm dev
+```
 
-1. Navigate to [clerk's dashboard](https://dashboard.clerk.com/) and create a user.
-2. Go back to the app and login with the same credentials (it's easiest to use a google account).
+### Start a localtunnel to connect clerk websocket for user sync to db
+
+```bash
+ts --port 3000
+```
+
+1. Navigate to [clerk's dashboard](https://dashboardclerk.com) and create your websocket. Websocket is located in the left side nav of the dashboard close to the bottom.
+2. Copy the localtunnel url and append <em>/api/websocket</em> to it. Example: https://red-ghosts-wash.loca.lt/api/websocket. Use this as your websocket url.
+3. Use the <em>Signing Secret</em> as the WEBHOOK_SECRET for your .env file.
+4. Create a new user inside your clerk application.
+5. Go back to the app `localhost:3000` and login with the same credentials (it's easiest to use a google account).
+
+NOTE: if the localtunnel is slow shut it down and use the localhost:3000. The localtunnel was only for the websocket connection.
 
 ## Usage
 
 ### Tech Stack
+
+Initial Creation of stack was made with the [T3 Stack](https://create.t3.gg)
 
 - Next.js
 - TailwindCSS
