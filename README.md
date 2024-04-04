@@ -2,7 +2,7 @@
 
 ## Description
 
-Learn the consequences of your actions. Track your habits and learn how they affect you to make better improvements for you life. Consequence is a habit tracking app with AI feedback to show you correlations of your actions and consequences. It helps you see what and how is affecting your life. Let's make better decisions! 👍
+Learn the consequences of your actions. Track your habits and learn how they affect you to make better improvements for you life. Consequence is a habit tracking app with AI feedback to show you correlations of your actions and consequences. Let's make better decisions! 👍
 
 Definition of Consequence: `a result or effect of an action or condition.`
 
