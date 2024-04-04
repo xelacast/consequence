@@ -88,7 +88,7 @@ NOTE: if the localtunnel is slow shut it down and use the localhost:3000. The lo
 
 ### Tech Stack
 
-Initial Creation of stack was made with the [T3 Stack](https://create.t3.gg)
+Initial build was made with the [T3 Stack](https://create.t3.gg) cli
 
 - Next.js
 - TailwindCSS
