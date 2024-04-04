@@ -10,9 +10,9 @@ NOTE: The AI feature of this application is in progress.
 
 ## Motivation
 
-I want to see the consequence of my action, how my actions are affecting me. Am I aiming well with self improvement? Is cardio right for me? What am I doing that is using up my time but are not aligned with who I aspire to be? How is it affecting me? There are a ton of questions I have, and a lot of health and habit trackers on the market. None of them i've come across have a built in AI tool to communicate with your data.
-
 I have experienced abdominal discomfort for many years and have been taking notes on how to improve it. I have several filled notebooks of notes and journaling, and more of planning and optimization. Going through all of this data would take me weeks and I have lost a few along the way. <em>Why not have it at the edge of my finger tips and chat with it directly?</em>
+
+I want to analyze the consequence of my action. How is lack of good sleep habits affecting my work performance? Am I aiming well with self improvement? Is cardio right for me? What am I doing that is using up my time but is not aligned with who I aspire to be? How is it affecting me? There are a ton of questions I have. A lot of health and habit trackers on the market, but none of them I have come across has a built in AI tool to communicate with your data.
 
 ## ⚙️ Quick Start
 
